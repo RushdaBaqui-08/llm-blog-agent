@@ -199,8 +199,8 @@ class LazyChatOpenAI:
                 self._instance = ChatOpenAI(model="gpt-4o-mini")
             elif groq_key:
                 from langchain_groq import ChatGroq
-                model_name = os.environ.get("GROQ_MODEL", "llama-3.1-8b-instant")
-                self._instance = ChatGroq(model=model_name)
+                model_name = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+                self._instance = ChatGroq(model=model_name, max_tokens=4096)
             else:
                 # Fallback to ChatOpenAI so standard missing API key error is raised when used
                 self._instance = ChatOpenAI(model="gpt-4o-mini")
