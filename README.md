@@ -129,8 +129,3 @@ GOOGLE_API_KEY=your_gemini_api_key
    npm run dev
    ```
    Open `http://localhost:3000` in your browser.
-
----
-
-## 📄 License
-This project is licensed under the MIT License.

@@ -1,0 +1,259 @@
+{
+  "mode": "hybrid",
+  "needs_research": true,
+  "queries": [
+    "multi-agent AI systems in software development",
+    "latest advancements in multi-agent AI",
+    "applications of multi-agent AI in modern software systems"
+  ],
+  "evidence": [
+    {
+      "title": "Multi-agent AI workflows: The next evolution of AI coding - InfoWorld",
+      "url": "https://www.infoworld.com/article/4035926/multi-agent-ai-workflows-the-next-evolution-of-ai-coding.html",
+      "published_at": "",
+      "snippet": "# Multi-agent AI workflows: The next evolution of AI coding. ## Instead of working with a single coding agent, developers will soon realize gains by guiding a team of them. As AI-assisted coding becomes more common, a new pattern is emerging: multi-agent workflows. A multi-agent workflow refers to using various AI agents in parallel for specific software development life cycle (SDLC) tasks, whethe",
+      "source": ""
+    },
+    {
+      "title": "A Large-Scale Study on the Development and Issues of Multi-Agent ...",
+      "url": "https://arxiv.org/abs/2601.07136",
+      "published_at": "",
+      "snippet": "# Computer Science > Software Engineering. # Title:A Large-Scale Study on the Development and Issues of Multi-Agent AI Systems. | Comments: | 8 pages, 8 figures, IEEE BigData Workshop on Software Engineering for Agentic AI 2025 |. | Subjects: | Software Engineering (cs.SE); Artificial Intelligence (cs.AI) |. | Cite as: | arXiv:2601.07136 [cs.SE] |. |  | (or  arXiv:2601.07136v1 [cs.SE] for this ver",
+      "source": ""
+    },
+    {
+      "title": "What is a Multi Agent System",
+      "url": "https://relevanceai.com/learn/what-is-a-multi-agent-system",
+      "published_at": "",
+      "snippet": "In this comprehensive guide, we\u2019ll explore what exactly AI multi-agent systems are, their key capabilities, how they work, applications and examples, practical implementation considerations, and how integration of AI unlocks new possibilities. ## How Do Multi Agent Systems Work? Engineering a performant, secure and safe AI multi agent system requires bringing together capabilities across artificia",
+      "source": ""
+    },
+    {
+      "title": "What is a Multi-Agent System? | IBM",
+      "url": "https://www.ibm.com/think/topics/multiagent-system",
+      "published_at": "",
+      "snippet": "*   [Welcome](https://www.ibm.com/think/ai-agents#605511093). *   [Overview](https://www.ibm.com/think/topics/ai-agents#7281535). *   [What is agentic AI?](https://www.ibm.com/think/topics/agentic-ai#2095054954). *   [Overview](https://www.ibm.com/think/topics/ai-agent-development#1083937704). *   [Building AI agents](https://www.ibm.com/think/topics/how-to-build-an-ai-agent#1083937709). *   [Evol",
+      "source": ""
+    },
+    {
+      "title": "How I Built a Multi-Agent AI System That Changed My Development ...",
+      "url": "https://medium.com/@vedantparmarsingh/how-i-built-a-multi-agent-ai-system-that-changed-my-development-workflow-forever-2fede7780d0f",
+      "published_at": "",
+      "snippet": "# How I Built a Multi-Agent AI System That Changed My Development Workflow Forever | by Vedantparmarsingh | Medium. # How I Built a Multi-Agent AI System That Changed My Development Workflow Forever. _A deep dive into creating Multi-Agent Channel \u2014 where AI agents collaborate like a symphony orchestra_. I had a massive codebase to refactor, documentation to write, tests to create, and performance ",
+      "source": ""
+    },
+    {
+      "title": "Are Multi-Agent AI \u201cDev Teams\u201d Actually Useful in Real Work? - Reddit",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1q07nzj/are_multiagent_ai_dev_teams_actually_useful_in",
+      "published_at": "",
+      "snippet": "I've seen a lot of people build multi-agent systems where each agent takes on a role and together they form a \u201cfull\u201d software development",
+      "source": ""
+    },
+    {
+      "title": "Exploring the future of AI with multi-agent systems and LLMs in action",
+      "url": "https://www.youtube.com/watch?v=jH3mTJ9cNDc",
+      "published_at": "",
+      "snippet": "... latest advancements in AI, focusing on two transformative technologies: agent-based systems and LLMs. We will break down how AI agents work",
+      "source": ""
+    },
+    {
+      "title": "Multi-agent system - Wikipedia",
+      "url": "https://en.wikipedia.org/wiki/Multi-agent_system",
+      "published_at": "",
+      "snippet": "With advancements in large language models (LLMs) such as ChatGPT, LLM-based multi-agent frameworks, such as CAMEL, have emerged as a new paradigm for",
+      "source": ""
+    },
+    {
+      "title": "Multi-Agent AI Benefits, Advantages & Developments | InData Labs",
+      "url": "https://indatalabs.com/blog/multi-agent-ai",
+      "published_at": "",
+      "snippet": "Multi-agent AI systems are transforming the AI sector by enabling multiple intelligent agents to collaborate and complete tasks.",
+      "source": ""
+    },
+    {
+      "title": "The Future of Multi-Agent Systems: Trends, Challenges, and ...",
+      "url": "https://smythos.com/developers/agent-development/future-of-multi-agent-systems",
+      "published_at": "",
+      "snippet": "Advancements in coordination algorithms, machine learning integration, and scalability solutions are set to expand AI-driven problem-solving. We can expect more",
+      "source": ""
+    },
+    {
+      "title": "Multiagent Systems: A New Era in AI-Driven Enterprise Automation",
+      "url": "https://www.gartner.com/en/articles/multiagent-systems",
+      "published_at": "",
+      "snippet": "Multiagent systems offer CIOs opportunities to expedite innovation, accelerate automation and improve efficiency through collaborative, specialized AI agents.",
+      "source": ""
+    },
+    {
+      "title": "Multi-Agent AI Systems: Where They Shine and How They ... - ML6",
+      "url": "https://www.ml6.eu/en/blog/multi-agent-ai-systems-where-they-shine-and-how-they-work-together",
+      "published_at": "",
+      "snippet": "Discover how multi-agent AI systems collaborate and outperform single models, driving more reliable and scalable business results.",
+      "source": ""
+    },
+    {
+      "title": "Do We Actually Need Multi-Agent AI Systems? : r/AI_Agents - Reddit",
+      "url": "https://www.reddit.com/r/AI_Agents/comments/1j9bwl7/do_we_actually_need_multiagent_ai_systems",
+      "published_at": "",
+      "snippet": "Recent research underscores the advantages of Multi-Agent Systems over single-agent systems in various applications:\u200b. - Enhanced Simulation",
+      "source": ""
+    },
+    {
+      "title": "Multi-Agent Systems: Architecture, Applications & Real-World Impact",
+      "url": "https://www.cognizant.com/us/en/ai-lab/blog/what-are-multi-agent-systems",
+      "published_at": "",
+      "snippet": "* As organizations adopt AI for complex tasks, multi-agent systems will become central to distributed intelligence and adaptive decision making. ### How Multi-Agent Systems Work. ### Benefits of Multi-Agent Systems. As multi-agent systems take on more decision-making, ethical design becomes essential. [neuro-san](https://www.cognizant.com/us/en/ai-lab/neuro-san) is Cognizant\u2019s data-driven multi-ag",
+      "source": ""
+    },
+    {
+      "title": "Multi-Agent Systems: Building the Autonomous Enterprise",
+      "url": "https://www.automationanywhere.com/rpa/multi-agent-systems",
+      "published_at": "",
+      "snippet": "From agentic AI to end\u2011to\u2011end automation, be a part of the flagship event where our community gathers to build, learn, and lead. # Multi-Agent Systems: Building the Autonomous Enterprise. Multi-agent systems (MAS) are networks of intelligent software agents that work together across enterprise systems and departments, without human involvement. Unlike standalone AI applications, these networks of ",
+      "source": ""
+    },
+    {
+      "title": "Transform Enterprise AI with Multi-Agent Systems | Galileo",
+      "url": "https://galileo.ai/blog/multi-agent-ai-systems",
+      "published_at": "",
+      "snippet": "# The Transformative Power of Multi-Agent Systems in AI. Unlock unprecedented efficiency and innovation with multi-agent AI systems. Explore orchestration strategies, integration challenges, and the future of collaborative AI for enterprises. These systems are revolutionizing how organizations approach automation, creating unprecedented opportunities for efficiency and innovation across industries",
+      "source": ""
+    }
+  ],
+  "plan": {
+    "blog_title": "Revolutionizing Software Development: The Rise of Multi-Agent AI Systems",
+    "audience": "Software developers and AI enthusiasts",
+    "tone": "Informative and futuristic",
+    "blog_kind": "explainer",
+    "constraints": [
+      "explanation of multi-agent AI systems",
+      "discussion of their applications in software development",
+      "analysis of their potential impact on the industry"
+    ],
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Introduction to Multi-Agent AI Systems",
+        "goal": "Understand the basics of multi-agent AI systems and their relevance to software development.",
+        "bullets": [
+          "Definition of multi-agent AI systems",
+          "Key capabilities and characteristics",
+          "Current state of research and development"
+        ],
+        "target_words": 200,
+        "tags": [
+          "multi-agent AI",
+          "software development"
+        ],
+        "requires_research": true,
+        "requires_citations": true,
+        "requires_code": false
+      },
+      {
+        "id": 2,
+        "title": "How Multi-Agent AI Systems Work",
+        "goal": "Learn about the architecture and functionality of multi-agent AI systems.",
+        "bullets": [
+          "Overview of system components and interactions",
+          "Communication and coordination mechanisms",
+          "Decision-making processes and conflict resolution"
+        ],
+        "target_words": 250,
+        "tags": [
+          "multi-agent AI",
+          "system architecture"
+        ],
+        "requires_research": true,
+        "requires_citations": true,
+        "requires_code": false
+      },
+      {
+        "id": 3,
+        "title": "Applications of Multi-Agent AI Systems in Software Development",
+        "goal": "Explore the potential applications and benefits of multi-agent AI systems in software development.",
+        "bullets": [
+          "Automated coding and testing",
+          "Project management and coordination",
+          "Code review and optimization"
+        ],
+        "target_words": 220,
+        "tags": [
+          "multi-agent AI",
+          "software development",
+          "applications"
+        ],
+        "requires_research": true,
+        "requires_citations": true,
+        "requires_code": false
+      },
+      {
+        "id": 4,
+        "title": "Real-World Examples and Case Studies",
+        "goal": "Examine real-world examples and case studies of multi-agent AI systems in software development.",
+        "bullets": [
+          "Success stories and lessons learned",
+          "Challenges and limitations",
+          "Future directions and potential applications"
+        ],
+        "target_words": 280,
+        "tags": [
+          "multi-agent AI",
+          "case studies",
+          "software development"
+        ],
+        "requires_research": true,
+        "requires_citations": true,
+        "requires_code": false
+      },
+      {
+        "id": 5,
+        "title": "The Future of Multi-Agent AI Systems in Software Development",
+        "goal": "Discuss the potential impact and future directions of multi-agent AI systems in software development.",
+        "bullets": [
+          "Advancements in coordination algorithms and machine learning",
+          "Scalability solutions and integration with existing tools",
+          "Ethical considerations and potential risks"
+        ],
+        "target_words": 240,
+        "tags": [
+          "multi-agent AI",
+          "future directions",
+          "software development"
+        ],
+        "requires_research": true,
+        "requires_citations": true,
+        "requires_code": false
+      }
+    ]
+  },
+  "image_specs": [
+    {
+      "placeholder": "[[IMAGE_1]]",
+      "filename": "multi-agent-ai-systems-architecture.png",
+      "alt": "Architecture of Multi-Agent AI Systems",
+      "caption": "The architecture of multi-agent AI systems, showing the interactions between agents, environment, and interactions.",
+      "prompt": "Create a technical diagram showing the architecture of a multi-agent AI system, with labeled components and interactions.",
+      "size": "1024x1024",
+      "quality": "medium"
+    },
+    {
+      "placeholder": "[[IMAGE_2]]",
+      "filename": "multi-agent-ai-systems-communication.png",
+      "alt": "Communication in Multi-Agent AI Systems",
+      "caption": "The communication mechanisms used in multi-agent AI systems, such as message passing or shared memory.",
+      "prompt": "Create a technical diagram showing the communication mechanisms used in multi-agent AI systems, with labeled components and interactions.",
+      "size": "1024x1024",
+      "quality": "medium"
+    },
+    {
+      "placeholder": "[[IMAGE_3]]",
+      "filename": "multi-agent-ai-systems-applications.png",
+      "alt": "Applications of Multi-Agent AI Systems",
+      "caption": "The applications of multi-agent AI systems in software development, including automated coding, project management, and code review.",
+      "prompt": "Create an illustration showing the various applications of multi-agent AI systems in software development, with labeled components and examples.",
+      "size": "1024x1024",
+      "quality": "medium"
+    }
+  ],
+  "sections_count": 5
+}
