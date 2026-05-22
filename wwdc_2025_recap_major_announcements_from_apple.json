@@ -1,0 +1,106 @@
+{
+  "mode": "open_book",
+  "needs_research": true,
+  "queries": [
+    "Apple WWDC 2025 major announcements",
+    "WWDC 2025 keynote highlights",
+    "Apple WWDC 2025 news and updates"
+  ],
+  "evidence": [],
+  "plan": {
+    "blog_title": "WWDC 2025 Recap: Major Announcements from Apple",
+    "audience": "Software Developers and Tech Enthusiasts",
+    "tone": "Informative",
+    "blog_kind": "news_roundup",
+    "constraints": [
+      "Limited time-sensitive information available",
+      "Recency of information: 730 days"
+    ],
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Review Keynote Address",
+        "goal": "Understand the main topics covered in Apple's WWDC 2025 keynote address.",
+        "bullets": [
+          "Watch the WWDC 2025 keynote address",
+          "Note down the key announcements",
+          "Check Apple's official website for a summary"
+        ],
+        "target_words": 400,
+        "tags": [
+          "Apple WWDC 2025",
+          "Keynote Address"
+        ],
+        "requires_research": false,
+        "requires_citations": false,
+        "requires_code": false
+      },
+      {
+        "id": 2,
+        "title": "Explore New iOS Features",
+        "goal": "Learn about the new features and updates coming to iOS in 2025.",
+        "bullets": [
+          "Visit Apple's official website for iOS updates",
+          "Check online reviews and blogs for in-depth analysis",
+          "Look for developer-focused announcements"
+        ],
+        "target_words": 350,
+        "tags": [
+          "iOS 2025",
+          "New Features"
+        ],
+        "requires_research": true,
+        "requires_citations": true,
+        "requires_code": false
+      },
+      {
+        "id": 3,
+        "title": "Discuss New MacBook Pro Models",
+        "goal": "Understand the changes and updates to the MacBook Pro lineup in 2025.",
+        "bullets": [
+          "Check Apple's official website for MacBook Pro updates",
+          "Read online reviews and comparisons",
+          "Look for developer-focused announcements"
+        ],
+        "target_words": 300,
+        "tags": [
+          "MacBook Pro 2025",
+          "New Models"
+        ],
+        "requires_research": true,
+        "requires_citations": true,
+        "requires_code": false
+      }
+    ]
+  },
+  "image_specs": [
+    {
+      "placeholder": "[[IMAGE_1]]",
+      "filename": "WWDC_2025_Stage.png",
+      "alt": "WWDC 2025 Stage",
+      "caption": "WWDC 2025 Keynote Address Stage",
+      "prompt": "WWDC 2025 keynote address stage with Apple logo and attendees",
+      "size": "1024x1024",
+      "quality": "high"
+    },
+    {
+      "placeholder": "[[IMAGE_2]]",
+      "filename": "New_iOS_Features.png",
+      "alt": "New iOS Features",
+      "caption": "New iOS Features",
+      "prompt": "iOS 16 features and updates on a MacBook Pro screen",
+      "size": "1024x1024",
+      "quality": "high"
+    },
+    {
+      "placeholder": "[[IMAGE_3]]",
+      "filename": "New_MacBook_Pro_Models.png",
+      "alt": "New MacBook Pro Models",
+      "caption": "New MacBook Pro Models",
+      "prompt": "2025 MacBook Pro models with updated features and specifications",
+      "size": "1024x1024",
+      "quality": "high"
+    }
+  ],
+  "sections_count": 3
+}

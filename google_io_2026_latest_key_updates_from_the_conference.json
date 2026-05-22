@@ -1,0 +1,118 @@
+{
+  "mode": "open_book",
+  "needs_research": true,
+  "queries": [
+    "Google I/O 2026 keynote session updates",
+    "Google I/O 2026 latest keynote speaker announcements",
+    "Google I/O 2026 latest key update on Google Cloud Platform",
+    "Google I/O 2026 latest news on Android updates",
+    "Google I/O 2026 latest information on Google AI advancements",
+    "latest Google I/O 2026 updates on Google Maps and location services",
+    "latest Google I/O 2026 updates on Google Workspace and G Suite",
+    "latest Google I/O 2026 news on Google hardware and device updates",
+    "Google I/O 2026 latest key update on Google Assistant and voice AI"
+  ],
+  "evidence": [],
+  "plan": {
+    "blog_title": "Google I/O 2026: Latest Key Updates from the Conference",
+    "audience": "Developers and tech enthusiasts",
+    "tone": "Informative",
+    "blog_kind": "news_roundup",
+    "constraints": [
+      "No tutorial content",
+      "Limited evidence, plan reflects uncertainty"
+    ],
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Update on Google Tensor Processing Units (TPUs)",
+        "goal": "Understand the latest advancements in Google's TPU technology.",
+        "bullets": [
+          "TPUv5 architecture and its improvements",
+          "Enhanced machine learning capabilities",
+          "Potential applications in various industries"
+        ],
+        "target_words": 300,
+        "tags": [],
+        "requires_research": false,
+        "requires_citations": false,
+        "requires_code": false
+      },
+      {
+        "id": 2,
+        "title": "Google Cloud AI Platform: New Features and Updates",
+        "goal": "Learn about the latest features and updates on Google Cloud AI Platform.",
+        "bullets": [
+          "New model training and deployment capabilities",
+          "Enhanced data annotation tools",
+          "Improved collaboration features"
+        ],
+        "target_words": 350,
+        "tags": [],
+        "requires_research": false,
+        "requires_citations": false,
+        "requires_code": false
+      },
+      {
+        "id": 3,
+        "title": "Google Assistant: Latest Updates and Integrations",
+        "goal": "Understand the latest updates and integrations on Google Assistant.",
+        "bullets": [
+          "New conversational AI capabilities",
+          "Enhanced smart home integrations",
+          "Improved multilingual support"
+        ],
+        "target_words": 250,
+        "tags": [],
+        "requires_research": false,
+        "requires_citations": false,
+        "requires_code": false
+      },
+      {
+        "id": 4,
+        "title": "Google I/O 2026 Keynote Highlights",
+        "goal": "Summarize the key highlights from the Google I/O 2026 keynote address.",
+        "bullets": [
+          "Main announcements and product launches",
+          "Key takeaways and surprises",
+          "Impact on the tech industry"
+        ],
+        "target_words": 200,
+        "tags": [],
+        "requires_research": false,
+        "requires_citations": false,
+        "requires_code": false
+      }
+    ]
+  },
+  "image_specs": [
+    {
+      "placeholder": "[[IMAGE_1]]",
+      "filename": "google_io_2026_keynote_stage.jpg",
+      "alt": "Google I/O 2026 keynote stage",
+      "caption": "Main stage at Google I/O 2026",
+      "prompt": "Keynote stage at Google I/O 2026 conference",
+      "size": "1024x1024",
+      "quality": "high"
+    },
+    {
+      "placeholder": "[[IMAGE_2]]",
+      "filename": "google_cloud_ai_platform_team.jpg",
+      "alt": "Google Cloud AI Platform team",
+      "caption": "Google Cloud AI Platform team members on stage",
+      "prompt": "Google Cloud AI Platform team members at Google I/O 2026",
+      "size": "1024x1024",
+      "quality": "high"
+    },
+    {
+      "placeholder": "[[IMAGE_3]]",
+      "filename": "google_assistant_device.jpg",
+      "alt": "Google Assistant device",
+      "caption": "Google Assistant-enabled smart home device",
+      "prompt": "Google Assistant-enabled smart home device on display at Google I/O 2026",
+      "size": "1024x1024",
+      "quality": "high"
+    }
+  ],
+  "sections_count": 4
+}

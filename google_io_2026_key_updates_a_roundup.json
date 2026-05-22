@@ -1,0 +1,109 @@
+{
+  "mode": "open_book",
+  "needs_research": true,
+  "queries": [
+    "Google I/O 2026 keynote updates",
+    "Google I/O 2026 schedule of events",
+    "latest Google I/O 2026 keynote speakers",
+    "Google I/O 2026 news coverage",
+    "Google I/O 2026 announcements recap",
+    "Google I/O 2026 key takeaways"
+  ],
+  "evidence": [],
+  "plan": {
+    "blog_title": "Google I/O 2026 Key Updates: A Roundup",
+    "audience": "Developers and Tech Enthusiasts",
+    "tone": "Informative",
+    "blog_kind": "news_roundup",
+    "constraints": [
+      "no tutorial content",
+      "weak evidence"
+    ],
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Review Google I/O 2026 Keynote",
+        "goal": "Understand the key announcements from Google I/O 2026 keynote.",
+        "bullets": [
+          "Summarize the major announcements",
+          "Highlight any notable absentees",
+          "Discuss potential implications for the industry"
+        ],
+        "target_words": 350,
+        "tags": [
+          "Google I/O",
+          "2026 keynote"
+        ],
+        "requires_research": true,
+        "requires_citations": true,
+        "requires_code": false
+      },
+      {
+        "id": 2,
+        "title": "Google I/O 2026 Product Updates",
+        "goal": "Identify the key product updates announced at Google I/O 2026.",
+        "bullets": [
+          "List the updated products and services",
+          "Describe the new features added",
+          "Discuss any potential impact on user experience"
+        ],
+        "target_words": 300,
+        "tags": [
+          "Google I/O",
+          "product updates"
+        ],
+        "requires_research": true,
+        "requires_citations": true,
+        "requires_code": false
+      },
+      {
+        "id": 3,
+        "title": "Upcoming Google I/O 2026 Events",
+        "goal": "Find out the details of upcoming events related to Google I/O 2026.",
+        "bullets": [
+          "List the upcoming events",
+          "Provide details about each event",
+          "Discuss the significance of each event"
+        ],
+        "target_words": 200,
+        "tags": [
+          "Google I/O",
+          "upcoming events"
+        ],
+        "requires_research": true,
+        "requires_citations": true,
+        "requires_code": false
+      }
+    ]
+  },
+  "image_specs": [
+    {
+      "placeholder": "[[IMAGE_1]]",
+      "filename": "google_assistant_on_edge_devices.png",
+      "alt": "Google Assistant on Edge Devices",
+      "caption": "Google Assistant on Edge Devices",
+      "prompt": "A smart light bulb with Google Assistant integrated",
+      "size": "1024x1024",
+      "quality": "medium"
+    },
+    {
+      "placeholder": "[[IMAGE_2]]",
+      "filename": "google_cloud_storage.png",
+      "alt": "Google Cloud Storage",
+      "caption": "Google Cloud Storage",
+      "prompt": "A screenshot of Google Cloud Storage with improved security features",
+      "size": "1024x1024",
+      "quality": "medium"
+    },
+    {
+      "placeholder": "[[IMAGE_3]]",
+      "filename": "google_io_2026_keynote.png",
+      "alt": "Google I/O 2026 Keynote",
+      "caption": "Google I/O 2026 Keynote",
+      "prompt": "A photo of the Google I/O 2026 keynote stage with Sundar Pichai",
+      "size": "1024x1024",
+      "quality": "medium"
+    }
+  ],
+  "sections_count": 3
+}

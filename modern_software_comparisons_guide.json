@@ -1,0 +1,103 @@
+{
+  "mode": "closed_book",
+  "needs_research": false,
+  "queries": [
+    "What are the key differences between Java and C++?",
+    "How do Python and JavaScript compare in terms of performance?",
+    "What is the main advantage of using Ruby on Rails over other frameworks?"
+  ],
+  "evidence": [],
+  "plan": {
+    "blog_title": "Modern Software Comparisons Guide",
+    "audience": "Software Developers and Architects",
+    "tone": "Objective and Informative",
+    "blog_kind": "comparison",
+    "constraints": [],
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Choose a Modern Web Framework",
+        "goal": "Select a suitable web framework for your project based on performance, scalability, and maintainability",
+        "bullets": [
+          "Understand the differences between popular web frameworks like React, Angular, and Vue.js",
+          "Evaluate the trade-offs between monolithic and microservices architectures",
+          "Consider the impact of framework choice on project timelines and budgets"
+        ],
+        "target_words": 400,
+        "tags": [
+          "web development",
+          "software architecture"
+        ],
+        "requires_research": false,
+        "requires_citations": false,
+        "requires_code": false
+      },
+      {
+        "id": 2,
+        "title": "Compare NoSQL Databases",
+        "goal": "Select a suitable NoSQL database for your project based on data structure, scalability, and performance",
+        "bullets": [
+          "Understand the differences between popular NoSQL databases like MongoDB, Cassandra, and Redis",
+          "Evaluate the trade-offs between document-oriented, key-value, and graph databases",
+          "Consider the impact of database choice on data consistency and availability"
+        ],
+        "target_words": 450,
+        "tags": [
+          "database systems",
+          "data modeling"
+        ],
+        "requires_research": false,
+        "requires_citations": false,
+        "requires_code": false
+      },
+      {
+        "id": 3,
+        "title": "Evaluate Cloud Service Providers",
+        "goal": "Select a suitable cloud service provider for your project based on cost, scalability, and reliability",
+        "bullets": [
+          "Understand the differences between popular cloud service providers like AWS, Azure, and Google Cloud",
+          "Evaluate the trade-offs between IaaS, PaaS, and SaaS offerings",
+          "Consider the impact of cloud choice on data security and compliance"
+        ],
+        "target_words": 500,
+        "tags": [
+          "cloud computing",
+          "infrastructure as a service"
+        ],
+        "requires_research": false,
+        "requires_citations": false,
+        "requires_code": false
+      }
+    ]
+  },
+  "image_specs": [
+    {
+      "placeholder": "[[IMAGE_1]]",
+      "filename": "qkv_flow.png",
+      "alt": "Document-Oriented Database",
+      "caption": "A diagram illustrating the architecture of a document-oriented NoSQL database like MongoDB.",
+      "prompt": "Generate an image of a document-oriented NoSQL database architecture.",
+      "size": "1024x1024",
+      "quality": "medium"
+    },
+    {
+      "placeholder": "[[IMAGE_2]]",
+      "filename": "redis_architecture.png",
+      "alt": "Key-Value Stores",
+      "caption": "A diagram illustrating the architecture of a key-value store like Redis.",
+      "prompt": "Generate an image of a key-value store architecture.",
+      "size": "1024x1024",
+      "quality": "medium"
+    },
+    {
+      "placeholder": "[[IMAGE_3]]",
+      "filename": "cassandra_architecture.png",
+      "alt": "Graph Databases",
+      "caption": "A diagram illustrating the architecture of a graph database like Cassandra.",
+      "prompt": "Generate an image of a graph database architecture.",
+      "size": "1024x1024",
+      "quality": "medium"
+    }
+  ],
+  "sections_count": 3
+}
