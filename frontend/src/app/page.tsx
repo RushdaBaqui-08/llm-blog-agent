@@ -50,6 +50,8 @@ interface BlogState {
   evidence: EvidenceItem[];
   plan: Plan | null;
   sections_count: number;
+  completed_section_ids?: number[];
+  warning?: string | null;
   image_specs: ImageSpec[] | null;
   final: string;
 }
@@ -58,6 +60,100 @@ interface PastBlog {
   filename: string;
   title: string;
   updated_at: number;
+}
+
+function CodeBlock({ code, language }: { code: string; language: string }) {
+  const [copied, setCopied] = React.useState(false);
+  
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  
+  const highlightCode = (rawCode: string, lang: string) => {
+    let escaped = rawCode
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+       
+    if (!lang) return escaped;
+    
+    const lowerLang = lang.toLowerCase();
+    if (lowerLang === "python" || lowerLang === "js" || lowerLang === "javascript" || lowerLang === "ts" || lowerLang === "typescript" || lowerLang === "json") {
+      escaped = escaped.replace(/(#.*|\/\/.*)/g, '<span style="color: #6a9955">$1</span>');
+      escaped = escaped.replace(/(["'])(.*?)\1/g, '<span style="color: #ce9178">$1$2$1</span>');
+      const keywords = [
+        "def ", "class ", "return ", "import ", "from ", "as ", "if ", "else ", "elif ", "for ", "while ", "in ", "is ", "and ", "or ", "not ", "with ", "try ", "except ", "raise ", "await ", "async ",
+        "const ", "let ", "var ", "function ", "export ", "default ", "interface ", "type ", "extends ", "implements ", "new ", "true", "false", "null", "undefined"
+      ];
+      keywords.forEach(kw => {
+        const escapedKw = kw.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const regex = new RegExp(`\\b${escapedKw}`, 'g');
+        escaped = escaped.replace(regex, `<span style="color: #569cd6">${kw}</span>`);
+      });
+      escaped = escaped.replace(/\b(\d+)\b/g, '<span style="color: #b5cea8">$1</span>');
+    }
+    
+    return <span dangerouslySetInnerHTML={{ __html: escaped }} />;
+  };
+  
+  return (
+    <div className="custom-code-block" style={{
+      position: "relative",
+      background: "#0d1117",
+      borderRadius: "8px",
+      border: "1px solid rgba(255, 255, 255, 0.08)",
+      marginBottom: "20px",
+      overflow: "hidden",
+      fontFamily: "var(--font-mono)",
+      fontSize: "0.85rem"
+    }}>
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        background: "#161b22",
+        padding: "8px 16px",
+        borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+        color: "var(--text-muted)",
+        fontSize: "0.75rem",
+        textTransform: "uppercase",
+        fontWeight: 600,
+        letterSpacing: "0.05em"
+      }}>
+        <span>{language || "code"}</span>
+        <button
+          onClick={handleCopy}
+          style={{
+            background: "rgba(255, 255, 255, 0.05)",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            borderRadius: "4px",
+            padding: "4px 8px",
+            color: "var(--text-primary)",
+            cursor: "pointer",
+            transition: "all 0.2s ease"
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.15)"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; }}
+        >
+          {copied ? "✓ Copied!" : "📋 Copy"}
+        </button>
+      </div>
+      <pre style={{
+        margin: 0,
+        padding: "16px",
+        overflowX: "auto",
+        background: "transparent",
+        border: "none",
+        lineHeight: 1.5
+      }}>
+        <code style={{ background: "transparent", padding: 0, border: "none" }}>
+          {highlightCode(code, language)}
+        </code>
+      </pre>
+    </div>
+  );
 }
 
 export default function BlogDashboard() {
@@ -69,8 +165,9 @@ export default function BlogDashboard() {
   const [activeTab, setActiveTab] = useState<"plan" | "evidence" | "preview" | "images" | "logs">("preview");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [logs, setLogs] = useState<{ time: string; msg: string; type: "info" | "success" | "error" }[]>([]);
+  const [logs, setLogs] = useState<{ time: string; msg: string; type: "info" | "success" | "error" | "warning" }[]>([]);
   const [currentNode, setCurrentNode] = useState<string | null>(null);
+  const [copyBlogSuccess, setCopyBlogSuccess] = useState(false);
   
   // Loaded / Generated blog state
   const [currentState, setCurrentState] = useState<BlogState | null>(null);
@@ -135,6 +232,8 @@ export default function BlogDashboard() {
             tasks: [],
           },
           sections_count: data.metadata?.sections_count || 0,
+          completed_section_ids: data.metadata?.completed_section_ids || [],
+          warning: null,
           image_specs: data.metadata?.image_specs || null,
           final: data.content,
         });
@@ -145,6 +244,33 @@ export default function BlogDashboard() {
       }
     } catch (e) {
       addLog(`Error loading blog: ${e}`, "error");
+    }
+  };
+
+  // Delete a blog file
+  const deleteBlog = async (filename: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!confirm(`Are you sure you want to delete "${filename}"?`)) {
+      return;
+    }
+    try {
+      addLog(`Deleting blog: ${filename}...`, "info");
+      const res = await fetch(`http://localhost:8000/api/blogs/${filename}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        addLog(`Blog deleted successfully: ${filename}`, "success");
+        if (selectedFilename === filename) {
+          setSelectedFilename(null);
+          setCurrentState(null);
+        }
+        fetchPastBlogs();
+      } else {
+        const errData = await res.json();
+        addLog(`Failed to delete blog: ${errData.detail || res.statusText}`, "error");
+      }
+    } catch (err) {
+      addLog(`Error deleting blog: ${err}`, "error");
     }
   };
 
@@ -173,6 +299,8 @@ export default function BlogDashboard() {
       evidence: [],
       plan: null,
       sections_count: 0,
+      completed_section_ids: [],
+      warning: null,
       image_specs: null,
       final: "",
     });
@@ -250,11 +378,17 @@ export default function BlogDashboard() {
                   evidence: payload.evidence || (prev ? prev.evidence : []),
                   plan: payload.plan || (prev ? prev.plan : null),
                   sections_count: payload.sections_count !== undefined ? payload.sections_count : (prev ? prev.sections_count : 0),
+                  completed_section_ids: payload.completed_section_ids || (prev ? prev.completed_section_ids : []),
+                  warning: payload.warning || (prev ? prev.warning : null),
                   image_specs: payload.image_specs || (prev ? prev.image_specs : null),
                   final: payload.final || (prev ? prev.final : ""),
                 };
                 return newState;
               });
+
+              if (payload.warning) {
+                addLog(`Warning: ${payload.warning}`, "warning");
+              }
 
               if (eventName === "final") {
                 setCurrentNode("end");
@@ -288,6 +422,49 @@ export default function BlogDashboard() {
     }
   };
 
+  // Helper to parse Markdown inline formatting (bold, italic, links, inline code)
+  const renderInline = (text: string): React.ReactNode => {
+    if (!text) return "";
+    
+    // Split by markdown bold, italic, code, and link patterns
+    const regex = /(\*\*.*?\*\*|\*.*?\*|\[.*?\]\(.*?\)|`.*?`)/g;
+    const parts = text.split(regex);
+    
+    return parts.map((part, index) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return <strong key={index} style={{ color: "#ffffff", fontWeight: 600 }}>{part.slice(2, -2)}</strong>;
+      }
+      if (part.startsWith("*") && part.endsWith("*")) {
+        return <em key={index}>{part.slice(1, -1)}</em>;
+      }
+      if (part.startsWith("`") && part.endsWith("`")) {
+        return <code key={index}>{part.slice(1, -1)}</code>;
+      }
+      if (part.startsWith("[") && part.includes("](")) {
+        const closeBracket = part.indexOf("]");
+        const openParen = part.indexOf("(", closeBracket);
+        const closeParen = part.indexOf(")", openParen);
+        if (closeBracket !== -1 && openParen !== -1 && closeParen !== -1) {
+          const linkText = part.slice(1, closeBracket);
+          const linkUrl = part.slice(openParen + 1, closeParen);
+          return (
+            <a
+              key={index}
+              href={linkUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="markdown-link"
+              style={{ color: "var(--accent-emerald)", textDecoration: "underline" }}
+            >
+              {linkText}
+            </a>
+          );
+        }
+      }
+      return part;
+    });
+  };
+
   // Helper to parse Markdown and render preview reactively
   const renderMarkdown = (text: string) => {
     if (!text) return <p>No preview content available.</p>;
@@ -298,22 +475,33 @@ export default function BlogDashboard() {
     
     let inCodeBlock = false;
     let codeContent: string[] = [];
+    let codeLanguage = "";
+
+    let inList = false;
+    let listItems: React.ReactNode[] = [];
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
 
       // Code Block handling
       if (line.startsWith("```")) {
+        // If we are currently compiling a bullet list, close it first
+        if (inList) {
+          elements.push(<ul key={key++} style={{ marginBottom: "16px", paddingLeft: "24px" }}>{listItems}</ul>);
+          inList = false;
+          listItems = [];
+        }
+
         if (inCodeBlock) {
           elements.push(
-            <pre key={key++}>
-              <code>{codeContent.join("\n")}</code>
-            </pre>
+            <CodeBlock key={key++} code={codeContent.join("\n")} language={codeLanguage} />
           );
           codeContent = [];
+          codeLanguage = "";
           inCodeBlock = false;
         } else {
           inCodeBlock = true;
+          codeLanguage = line.slice(3).trim();
         }
         continue;
       }
@@ -323,29 +511,40 @@ export default function BlogDashboard() {
         continue;
       }
 
+      // Bullet lists handling (ul/li block aggregation)
+      const isListItem = line.startsWith("- ") || line.startsWith("* ");
+      if (isListItem) {
+        if (!inList) {
+          inList = true;
+          listItems = [];
+        }
+        listItems.push(<li key={listItems.length} style={{ marginBottom: "6px" }}>{renderInline(line.slice(2))}</li>);
+        continue;
+      } else {
+        if (inList) {
+          elements.push(<ul key={key++} style={{ marginBottom: "16px", paddingLeft: "24px" }}>{listItems}</ul>);
+          inList = false;
+          listItems = [];
+        }
+      }
+
       // Headers
       if (line.startsWith("# ")) {
-        elements.push(<h1 key={key++}>{line.slice(2)}</h1>);
+        elements.push(<h1 key={key++}>{renderInline(line.slice(2))}</h1>);
         continue;
       }
       if (line.startsWith("## ")) {
-        elements.push(<h2 key={key++}>{line.slice(3)}</h2>);
+        elements.push(<h2 key={key++}>{renderInline(line.slice(3))}</h2>);
         continue;
       }
       if (line.startsWith("### ")) {
-        elements.push(<h3 key={key++}>{line.slice(4)}</h3>);
+        elements.push(<h3 key={key++}>{renderInline(line.slice(4))}</h3>);
         continue;
       }
 
       // Blockquotes
       if (line.startsWith("> ")) {
-        elements.push(<blockquote key={key++}>{line.slice(2)}</blockquote>);
-        continue;
-      }
-
-      // Bullet lists
-      if (line.startsWith("- ") || line.startsWith("* ")) {
-        elements.push(<li key={key++}>{line.slice(2)}</li>);
+        elements.push(<blockquote key={key++}>{renderInline(line.slice(2))}</blockquote>);
         continue;
       }
 
@@ -383,21 +582,13 @@ export default function BlogDashboard() {
 
       // Parse inline formatting (bold, links, inline code)
       if (line.trim()) {
-        let content: React.ReactNode = line;
-        
-        // Inline code mapping
-        if (line.includes("`")) {
-          const parts = line.split("`");
-          content = parts.map((part, index) => {
-            if (index % 2 === 1) {
-              return <code key={index}>{part}</code>;
-            }
-            return part;
-          });
-        }
-
-        elements.push(<p key={key++}>{content}</p>);
+        elements.push(<p key={key++}>{renderInline(line)}</p>);
       }
+    }
+
+    // Flush remaining list items if text ends on list
+    if (inList) {
+      elements.push(<ul key={key++} style={{ marginBottom: "16px", paddingLeft: "24px" }}>{listItems}</ul>);
     }
 
     return <div className="markdown-body">{elements}</div>;
@@ -458,17 +649,34 @@ export default function BlogDashboard() {
             <div className="section-label">Past Articles ({pastBlogs.length})</div>
             <div className="past-blogs-list">
               {pastBlogs.map((b) => (
-                <button
+                <div
                   key={b.filename}
                   className={`past-blog-item ${selectedFilename === b.filename ? "active" : ""}`}
-                  onClick={() => loadBlog(b.filename)}
-                  disabled={isGenerating}
+                  onClick={() => {
+                    if (!isGenerating) loadBlog(b.filename);
+                  }}
+                  style={{ cursor: isGenerating ? "not-allowed" : "pointer" }}
                 >
-                  <div className="past-blog-title">{b.title}</div>
-                  <div className="past-blog-meta">
-                    {b.filename} · {new Date(b.updated_at * 1000).toLocaleDateString()}
+                  <div className="past-blog-content">
+                    <div className="past-blog-title" title={b.title}>{b.title}</div>
+                    <div className="past-blog-meta" title={`${b.filename} · ${new Date(b.updated_at * 1000).toLocaleDateString()}`}>
+                      {b.filename} · {new Date(b.updated_at * 1000).toLocaleDateString()}
+                    </div>
                   </div>
-                </button>
+                  <button
+                    className="past-blog-delete-btn"
+                    onClick={(e) => deleteBlog(b.filename, e)}
+                    disabled={isGenerating}
+                    title="Delete Article"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                      <line x1="10" y1="11" x2="10" y2="17"></line>
+                      <line x1="14" y1="11" x2="14" y2="17"></line>
+                    </svg>
+                  </button>
+                </div>
               ))}
               {pastBlogs.length === 0 && (
                 <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontStyle: "italic" }}>
@@ -592,26 +800,56 @@ export default function BlogDashboard() {
                   </div>
 
                   <div className="task-grid">
-                    {currentState.plan.tasks.map((task) => (
-                      <div key={task.id} className="task-card">
-                        <div className="task-id">0{task.id}</div>
-                        <h3 className="task-title">{task.title}</h3>
-                        <p className="task-goal">{task.goal}</p>
-                        
-                        <ul className="task-bullets">
-                          {task.bullets.map((b, idx) => (
-                            <li key={idx}>{b}</li>
-                          ))}
-                        </ul>
+                    {currentState.plan.tasks.map((task) => {
+                      const isDone = currentState.completed_section_ids?.includes(task.id);
+                      const isWriting = currentNode === "worker" && !isDone;
+                      
+                      let cardBorder = "1px solid var(--border-glow)";
+                      let cardBg = "var(--bg-glass)";
+                      let statusBadge = null;
+                      
+                      if (isDone) {
+                        cardBorder = "1px solid rgba(16, 185, 129, 0.4)";
+                        cardBg = "rgba(16, 185, 129, 0.03)";
+                        statusBadge = <span className="badge" style={{ background: "rgba(16, 185, 129, 0.15)", color: "#a7f3d0" }}>✓ Completed</span>;
+                      } else if (isWriting) {
+                        cardBorder = "1px solid rgba(139, 92, 246, 0.5)";
+                        cardBg = "rgba(139, 92, 246, 0.05)";
+                        statusBadge = <span className="badge" style={{ background: "rgba(139, 92, 246, 0.15)", color: "#ddd6fe", animation: "pulse-slow 2s infinite ease-in-out" }}>⚡ Writing...</span>;
+                      }
+                      
+                      return (
+                        <div
+                          key={task.id}
+                          className="task-card"
+                          style={{
+                            border: cardBorder,
+                            background: cardBg,
+                            transition: "all 0.3s ease"
+                          }}
+                        >
+                          <div className="task-id">0{task.id}</div>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "8px" }}>
+                            <h3 className="task-title">{task.title}</h3>
+                            {statusBadge}
+                          </div>
+                          <p className="task-goal">{task.goal}</p>
+                          
+                          <ul className="task-bullets">
+                            {task.bullets.map((b, idx) => (
+                              <li key={idx}>{b}</li>
+                            ))}
+                          </ul>
 
-                        <div className="task-badge-row">
-                          <span className="badge badge-words">{task.target_words} words</span>
-                          {task.requires_research && <span className="badge badge-research">Research</span>}
-                          {task.requires_code && <span className="badge badge-code">Code</span>}
-                          {task.requires_citations && <span className="badge badge-citation">Citations</span>}
+                          <div className="task-badge-row">
+                            <span className="badge badge-words">{task.target_words} words</span>
+                            {task.requires_research && <span className="badge badge-research">Research</span>}
+                            {task.requires_code && <span className="badge badge-code">Code</span>}
+                            {task.requires_citations && <span className="badge badge-citation">Citations</span>}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               ) : (
@@ -675,23 +913,90 @@ export default function BlogDashboard() {
             <div>
               {currentState?.final ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                  {selectedFilename && (
-                    <div className="preview-actions">
-                      <a
-                        href={`http://localhost:8000/api/blogs/${selectedFilename}/download`}
-                        className="btn-secondary"
-                        download
-                      >
-                        ⬇️ Download Markdown
-                      </a>
-                      <a
-                        href={`http://localhost:8000/api/blogs/${selectedFilename}/bundle`}
-                        className="btn-secondary"
-                      >
-                        📦 Download Bundle (MD + Images)
-                      </a>
+                  {isGenerating && currentState?.plan && (
+                    <div style={{
+                      background: "var(--bg-glass)",
+                      border: "1px solid var(--border-glow)",
+                      borderRadius: "12px",
+                      padding: "16px 20px",
+                      marginBottom: "10px",
+                      animation: "fadeIn 0.3s ease"
+                    }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                        <span style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--accent-indigo)" }}>Writing Sections Progress</span>
+                        <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
+                          {currentState.completed_section_ids?.length || 0} of {currentState.plan.tasks.length} sections complete
+                        </span>
+                      </div>
+                      {/* progress bar */}
+                      <div style={{ background: "rgba(255,255,255,0.05)", height: "6px", borderRadius: "3px", overflow: "hidden", marginBottom: "16px" }}>
+                        <div style={{
+                          background: "var(--grad-primary)",
+                          width: `${((currentState.completed_section_ids?.length || 0) / currentState.plan.tasks.length) * 100}%`,
+                          height: "100%",
+                          transition: "width 0.4s ease"
+                        }} />
+                      </div>
+                      {/* mini task tags */}
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                        {currentState.plan.tasks.map((t) => {
+                          const isDone = currentState.completed_section_ids?.includes(t.id);
+                          const isWriting = currentNode === "worker" && !isDone;
+                          return (
+                            <div
+                              key={t.id}
+                              style={{
+                                fontSize: "0.75rem",
+                                padding: "4px 10px",
+                                borderRadius: "20px",
+                                background: isDone ? "rgba(16, 185, 129, 0.15)" : (isWriting ? "rgba(139, 92, 246, 0.15)" : "rgba(255,255,255,0.03)"),
+                                border: `1px solid ${isDone ? "rgba(16, 185, 129, 0.3)" : (isWriting ? "rgba(139, 92, 246, 0.3)" : "rgba(255,255,255,0.05)")}`,
+                                color: isDone ? "#a7f3d0" : (isWriting ? "#ddd6fe" : "var(--text-secondary)"),
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "6px",
+                                transition: "all 0.3s ease"
+                              }}
+                            >
+                              <span>{isDone ? "✓" : (isWriting ? "⚡" : "○")}</span>
+                              <span>{t.title}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   )}
+
+                  <div className="preview-actions">
+                    {selectedFilename && (
+                      <>
+                        <a
+                          href={`http://localhost:8000/api/blogs/${selectedFilename}/download`}
+                          className="btn-secondary"
+                          download
+                        >
+                          ⬇️ Download Markdown
+                        </a>
+                        <a
+                          href={`http://localhost:8000/api/blogs/${selectedFilename}/bundle`}
+                          className="btn-secondary"
+                        >
+                          📦 Download Bundle (MD + Images)
+                        </a>
+                      </>
+                    )}
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(currentState.final);
+                        setCopyBlogSuccess(true);
+                        setTimeout(() => setCopyBlogSuccess(false), 2000);
+                      }}
+                      className="btn-secondary"
+                      style={{ cursor: "pointer" }}
+                    >
+                      {copyBlogSuccess ? "✓ Copied!" : "📋 Copy Markdown"}
+                    </button>
+                  </div>
                   {renderMarkdown(currentState.final)}
                 </div>
               ) : (

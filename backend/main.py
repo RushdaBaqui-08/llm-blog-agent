@@ -179,6 +179,10 @@ async def generate_blog(request: Request, body: GenerateRequest):
                 for e in (current_state.get("evidence") or []):
                     evidence_list.append(e.model_dump() if hasattr(e, "model_dump") else e)
 
+                warning_msg = None
+                if current_state.get("needs_research") and not os.getenv("TAVILY_API_KEY"):
+                    warning_msg = "TAVILY_API_KEY environment variable is not set. Web research will be skipped."
+
                 payload = {
                     "node": list(event_chunk.keys())[0] if event_chunk else None,
                     "mode": current_state.get("mode"),
@@ -188,8 +192,10 @@ async def generate_blog(request: Request, body: GenerateRequest):
                     "evidence": evidence_list,
                     "plan": plan_dict,
                     "sections_count": len(current_state.get("sections") or []),
+                    "completed_section_ids": [item[0] for item in (current_state.get("sections") or [])],
                     "image_specs": current_state.get("image_specs"),
                     "final": current_state.get("final"),
+                    "warning": warning_msg,
                 }
                 
                 yield {
@@ -207,6 +213,10 @@ async def generate_blog(request: Request, body: GenerateRequest):
             for e in (current_state.get("evidence") or []):
                 evidence_list.append(e.model_dump() if hasattr(e, "model_dump") else e)
 
+            warning_msg = None
+            if current_state.get("needs_research") and not os.getenv("TAVILY_API_KEY"):
+                warning_msg = "TAVILY_API_KEY environment variable is not set. Web research will be skipped."
+
             final_payload = {
                 "node": "end",
                 "mode": current_state.get("mode"),
@@ -216,8 +226,10 @@ async def generate_blog(request: Request, body: GenerateRequest):
                 "evidence": evidence_list,
                 "plan": plan_dict,
                 "sections_count": len(current_state.get("sections") or []),
+                "completed_section_ids": [item[0] for item in (current_state.get("sections") or [])],
                 "image_specs": current_state.get("image_specs"),
                 "final": current_state.get("final"),
+                "warning": warning_msg,
             }
             yield {
                 "event": "final",
@@ -283,6 +295,31 @@ async def get_blog(filename: str):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error reading blog: {str(e)}")
+
+
+@app.delete("/api/blogs/{filename}")
+async def delete_blog(filename: str):
+    file_path = ROOT_DIR / filename
+    try:
+        resolved_root = ROOT_DIR.resolve()
+        resolved_file = file_path.resolve()
+        if not str(resolved_file).startswith(str(resolved_root)):
+            raise HTTPException(status_code=400, detail="Invalid file path")
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid path structure")
+        
+    if not file_path.exists() or not file_path.is_file():
+        raise HTTPException(status_code=404, detail="Blog not found")
+        
+    try:
+        file_path.unlink()
+        json_path = file_path.with_suffix(".json")
+        if json_path.exists() and json_path.is_file():
+            json_path.unlink()
+        return {"status": "success", "message": f"Successfully deleted {filename}"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error deleting blog: {str(e)}")
+
 
 
 @app.get("/api/blogs/{filename}/download")

@@ -3,10 +3,16 @@ from __future__ import annotations
 import operator
 import os
 import re
+import time
+import random
+import json
+import urllib.parse
 from datetime import date, timedelta
 from pathlib import Path
 from typing import TypedDict, List, Optional, Literal, Annotated
+from concurrent.futures import ThreadPoolExecutor
 
+import httpx
 from pydantic import BaseModel, Field, field_validator
 
 from langgraph.graph import StateGraph, START, END
@@ -126,9 +132,6 @@ class State(TypedDict):
 
 
 def retry_on_rate_limit(func, *args, **kwargs):
-    import time
-    import random
-    import re
     max_retries = 8
     delay = 1.0
     for attempt in range(max_retries):
@@ -263,10 +266,20 @@ def router_node(state: State) -> dict:
     else:
         recency_days = 3650
 
+    # Deduplicate queries case-insensitively while preserving order
+    seen_queries = set()
+    deduped_queries = []
+    for q in (decision.queries or []):
+        q_clean = q.strip()
+        q_lower = q_clean.lower()
+        if q_clean and q_lower not in seen_queries:
+            seen_queries.add(q_lower)
+            deduped_queries.append(q_clean)
+
     return {
         "needs_research": decision.needs_research,
         "mode": decision.mode,
-        "queries": decision.queries,
+        "queries": deduped_queries,
         "recency_days": recency_days,
     }
 
@@ -278,6 +291,7 @@ def route_next(state: State) -> str:
 # -----------------------------
 def _tavily_search(query: str, max_results: int = 5) -> List[dict]:
     if not os.getenv("TAVILY_API_KEY"):
+        print("Tavily search skipped: TAVILY_API_KEY not set.")
         return []
     try:
         from tavily import TavilyClient
@@ -296,7 +310,8 @@ def _tavily_search(query: str, max_results: int = 5) -> List[dict]:
                 }
             )
         return out
-    except Exception:
+    except Exception as e:
+        print(f"Error during Tavily search: {e}")
         return []
 
 def _iso_to_date(s: Optional[str]) -> Optional[date]:
@@ -323,7 +338,6 @@ def research_node(state: State) -> dict:
     queries = (state.get("queries") or [])[:10]
     raw: List[dict] = []
     
-    from concurrent.futures import ThreadPoolExecutor
     with ThreadPoolExecutor(max_workers=min(len(queries) or 1, 5)) as executor:
         results = executor.map(lambda q: _tavily_search(q, max_results=6), queries)
         for res in results:
@@ -573,7 +587,7 @@ def _gemini_generate_image_bytes(prompt: str) -> bytes:
     client = genai.Client(api_key=api_key)
 
     resp = client.models.generate_content(
-        model="gemini-2.5-flash-image",
+        model="imagen-3.0-generate-002",
         contents=prompt,
         config=types.GenerateContentConfig(
             response_modalities=["IMAGE"],
@@ -620,7 +634,6 @@ def generate_and_place_images(state: State) -> dict:
     image_specs = state.get("image_specs", []) or []
 
     # Save metadata JSON sidecar
-    import json
     metadata = {
         "mode": state.get("mode"),
         "needs_research": state.get("needs_research"),
@@ -657,33 +670,44 @@ def generate_and_place_images(state: State) -> dict:
                 out_path.write_bytes(img_bytes)
                 return placeholder, f"![{spec['alt']}](images/{filename})\n*{spec['caption']}*"
             except Exception as e:
-                # graceful fallback: try to fetch a placeholder image instead of showing fail block
+                # graceful fallback: try to generate using Pollinations AI (free, no-key AI image generator)
                 try:
-                    import urllib.parse
-                    import httpx
-                    clean_alt = spec.get('alt', 'AI Image')
-                    clean_text = "".join([c if c.isalnum() or c == " " else "_" for c in clean_alt])
-                    encoded_text = urllib.parse.quote(clean_text[:40]) # limit length for safety
-                    placeholder_url = f"https://placehold.co/800x600/1e1e2e/cdd6f4.png?text={encoded_text}"
-                    resp = httpx.get(placeholder_url, timeout=10.0)
+                    print(f"Google Image Generation failed: {e}. Falling back to Pollinations AI...")
+                    # Append style keywords to ensure we get clean animated vector illustrations
+                    style_prompt = spec["prompt"] + ", clean 2D vector flat animation illustration, technical design style, modern colors"
+                    encoded_prompt = urllib.parse.quote(style_prompt)
+                    pollinations_url = f"https://image.pollinations.ai/p/{encoded_prompt}?width=1024&height=1024&nologo=true"
+                    resp = httpx.get(pollinations_url, timeout=30.0)
                     if resp.status_code == 200:
                         out_path.write_bytes(resp.content)
                         return placeholder, f"![{spec['alt']}](images/{filename})\n*{spec['caption']}*"
                     else:
                         raise RuntimeError(f"HTTP {resp.status_code}")
-                except Exception as placeholder_error:
-                    # ultimate fallback: write failure prompt block
-                    prompt_block = (
-                        f"> **[IMAGE GENERATION FAILED]** {spec.get('caption','')}\n>\n"
-                        f"> **Alt:** {spec.get('alt','')}\n>\n"
-                        f"> **Prompt:** {spec.get('prompt','')}\n>\n"
-                        f"> **Error:** {e} (Placeholder Error: {placeholder_error})\n"
-                    )
-                    return placeholder, prompt_block
+                except Exception as pollinations_error:
+                    # ultimate fallback: flat placehold.co text block
+                    try:
+                        clean_alt = spec.get('alt', 'AI Image')
+                        clean_text = "".join([c if c.isalnum() or c == " " else "_" for c in clean_alt])
+                        encoded_text = urllib.parse.quote(clean_text[:40])
+                        placeholder_url = f"https://placehold.co/800x600/1e1e2e/cdd6f4.png?text={encoded_text}"
+                        resp = httpx.get(placeholder_url, timeout=10.0)
+                        if resp.status_code == 200:
+                            out_path.write_bytes(resp.content)
+                            return placeholder, f"![{spec['alt']}](images/{filename})\n*{spec['caption']}*"
+                        else:
+                            raise RuntimeError(f"HTTP {resp.status_code}")
+                    except Exception as placeholder_error:
+                        # ultimate textual fallback
+                        prompt_block = (
+                            f"> **[IMAGE GENERATION FAILED]** {spec.get('caption','')}\n>\n"
+                            f"> **Alt:** {spec.get('alt','')}\n>\n"
+                            f"> **Prompt:** {spec.get('prompt','')}\n>\n"
+                            f"> **Error:** {e} (Pollinations Error: {pollinations_error}, Placeholder Error: {placeholder_error})\n"
+                        )
+                        return placeholder, prompt_block
         else:
             return placeholder, f"![{spec['alt']}](images/{filename})\n*{spec['caption']}*"
 
-    from concurrent.futures import ThreadPoolExecutor
     with ThreadPoolExecutor(max_workers=min(len(image_specs) or 1, 3)) as executor:
         results = list(executor.map(process_image, image_specs))
 
