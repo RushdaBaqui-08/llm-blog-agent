@@ -9,3 +9,5 @@ langchain-core
 langchain-community
 google-genai
 tavily-python
+langchain-groq
+httpx
