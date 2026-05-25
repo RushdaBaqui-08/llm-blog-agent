@@ -156,6 +156,8 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
   );
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 export default function BlogDashboard() {
   // Inputs
   const [topic, setTopic] = useState("");
@@ -193,7 +195,7 @@ export default function BlogDashboard() {
   // Fetch past blogs list
   const fetchPastBlogs = async () => {
     try {
-      const res = await fetch("http://localhost:8000/api/blogs");
+      const res = await fetch(`${API_BASE_URL}/api/blogs`);
       if (res.ok) {
         const data = await res.json();
         setPastBlogs(data);
@@ -204,7 +206,7 @@ export default function BlogDashboard() {
   };
 
   // Log adding helper
-  const addLog = (msg: string, type: "info" | "success" | "error" = "info") => {
+  const addLog = (msg: string, type: "info" | "success" | "error" | "warning" = "info") => {
     const time = new Date().toLocaleTimeString();
     setLogs((prev) => [...prev, { time, msg, type }]);
   };
@@ -213,7 +215,7 @@ export default function BlogDashboard() {
   const loadBlog = async (filename: string) => {
     try {
       addLog(`Loading blog: ${filename}...`, "info");
-      const res = await fetch(`http://localhost:8000/api/blogs/${filename}`);
+      const res = await fetch(`${API_BASE_URL}/api/blogs/${filename}`);
       if (res.ok) {
         const data = await res.json();
         setSelectedFilename(filename);
@@ -255,7 +257,7 @@ export default function BlogDashboard() {
     }
     try {
       addLog(`Deleting blog: ${filename}...`, "info");
-      const res = await fetch(`http://localhost:8000/api/blogs/${filename}`, {
+      const res = await fetch(`${API_BASE_URL}/api/blogs/${filename}`, {
         method: "DELETE",
       });
       if (res.ok) {
@@ -306,7 +308,7 @@ export default function BlogDashboard() {
     });
 
     try {
-      const response = await fetch("http://localhost:8000/api/generate", {
+      const response = await fetch(`${API_BASE_URL}/api/generate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -557,7 +559,7 @@ export default function BlogDashboard() {
         // Rewrite local image paths to backend server
         if (!src.startsWith("http") && src.includes("images/")) {
           const filename = src.split("images/")[1];
-          src = `http://localhost:8000/images/${filename}`;
+          src = `${API_BASE_URL}/images/${filename}`;
         }
         
         elements.push(
@@ -971,14 +973,14 @@ export default function BlogDashboard() {
                     {selectedFilename && (
                       <>
                         <a
-                          href={`http://localhost:8000/api/blogs/${selectedFilename}/download`}
+                          href={`${API_BASE_URL}/api/blogs/${selectedFilename}/download`}
                           className="btn-secondary"
                           download
                         >
                           ⬇️ Download Markdown
                         </a>
                         <a
-                          href={`http://localhost:8000/api/blogs/${selectedFilename}/bundle`}
+                          href={`${API_BASE_URL}/api/blogs/${selectedFilename}/bundle`}
                           className="btn-secondary"
                         >
                           📦 Download Bundle (MD + Images)
@@ -1018,7 +1020,7 @@ export default function BlogDashboard() {
                 <div>
                   <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
                     <a
-                      href="http://localhost:8000/api/blogs/all/images-zip"
+                      href={`${API_BASE_URL}/api/blogs/all/images-zip`}
                       className="btn-secondary"
                     >
                       ⬇️ Download Images (ZIP)
@@ -1041,7 +1043,7 @@ export default function BlogDashboard() {
                         <div className="image-wrapper">
                           <img
                             className="img-element"
-                            src={`http://localhost:8000/images/${spec.filename}`}
+                            src={`${API_BASE_URL}/images/${spec.filename}`}
                             alt={spec.alt}
                             onError={(e) => {
                               // If image fails to load, display placeholder
