@@ -1,0 +1,396 @@
+{
+  "mode": "open_book",
+  "needs_research": true,
+  "queries": [
+    "FastAPI vs Node.js for AI backend development",
+    "2026 AI backend development frameworks comparison",
+    "Python vs Node.js for AI startups",
+    "FastAPI deployment ecosystem for AI applications",
+    "Node.js benchmarks for AI workloads 2026",
+    "Why AI startups prefer Python for backend development"
+  ],
+  "evidence": [
+    {
+      "title": "FastAPI vs Node.js: Why FastAPI is the Superior Backend ... - Medium",
+      "url": "https://medium.com/@rameshkannanyt0078/fastapi-vs-node-js-why-fastapi-is-the-superior-backend-framework-in-2024-0f72047f8d87",
+      "published_at": "",
+      "snippet": "In this blog, we'll demonstrate why FastAPI is better than Node.js by exploring performance, productivity, async handling, and built-in features through code",
+      "source": ""
+    },
+    {
+      "title": "FastAPI beats Node.js for AI-native applications | Sidharth Satapathy posted on the topic | LinkedIn",
+      "url": "https://www.linkedin.com/posts/sidharthsatapathy_from-frontend-to-ai-engineer-day-5-why-activity-7413206943416348672-toKX",
+      "published_at": "",
+      "snippet": "The results: \u2022 40% faster AI endpoints \u2022 26% less code \u2022 Direct access to every Python ML library \u2022 Production-ready security middleware If you're building AI-native applications and still on Node.js, the question isn't \"if\" you should migrate\u2014it's \"when.\" Full technical deep-dive with code examples and architecture diagrams: \ud83d\udd17 https://lnkd.in/gMrycgFw What's your experience with Python vs Node.js",
+      "source": ""
+    },
+    {
+      "title": "Actions backend Nodejs or FastAPI - OpenAI Developer Community",
+      "url": "https://community.openai.com/t/actions-backend-nodejs-or-fastapi/587111",
+      "published_at": "",
+      "snippet": "SuperTimmyH: Is there a practical reason more people choose Nodejs than say Flask or FastAPI? superior tooling, but that's just an opinion.",
+      "source": ""
+    },
+    {
+      "title": "FastAPI vs Node.js vs Go: 2026 Benchmark Reality Check",
+      "url": "https://acquaintsoft.com/blog/fastapi-vs-nodejs-vs-go-performance-benchmarks",
+      "published_at": "",
+      "snippet": "* FastAPI Performance Benchmarks vs Node.js and Go What the Numbers Actually Mean. FastAPI vs Node.js vs Go performance benchmarks for 2026. Real RPS numbers, hidden costs, and what the speed gap actually means for your Python backend. The conclusions drawn from them are usually wrong, because raw requests-per-second tells you almost nothing about whether your team should pick Python, JavaScript, ",
+      "source": ""
+    },
+    {
+      "title": "Which is better for backend development FastAPI or Node.js (Express)? \u00b7 community \u00b7 Discussion #179108 \u00b7 GitHub",
+      "url": "https://github.com/orgs/community/discussions/179108",
+      "published_at": "",
+      "snippet": "## Navigation Menu. # Provide feedback. We read every piece of feedback, and take your input very seriously. # Saved searches. ## Use saved searches to filter your results more quickly. There was an error while loading. ## codedbyhoussam Nov 7, 2025. I\u2019ve been exploring backend frameworks lately, and I\u2019m trying to decide between **FastAPI (Python)** and **Node.js** with Express. I know both are po",
+      "source": ""
+    },
+    {
+      "title": "Real world scenario FastAPI vs Node.js k8s cluster benchmarks",
+      "url": "https://www.reddit.com/r/FastAPI/comments/1hyfuob/real_world_scenario_fastapi_vs_nodejs_k8s_cluster",
+      "published_at": "",
+      "snippet": "Here is a video comparing FastAPI vs node.js and you can clearly see the performance difference between them. FastAPI is clearly writing",
+      "source": ""
+    },
+    {
+      "title": "Top 7 Backend Frameworks to Use in 2026: Pro Advice",
+      "url": "https://roadmap.sh/backend/frameworks",
+      "published_at": "",
+      "snippet": "# Top 7 Backend Frameworks to Use in 2026: Pro Advice. Choosing the right backend framework in 2026 can be crucial when you\u2019re building web applications. While the programming language you pick is important, the backend framework you go with will help define how scalable, secure, and maintainable your application is. It\u2019s the foundation that supports all the features your users interact with on th",
+      "source": ""
+    },
+    {
+      "title": "2026 TypeScript Backend Framework Roundup: Which is Best for AI?",
+      "url": "https://www.youtube.com/watch?v=HhzHoJOtKOc",
+      "published_at": "",
+      "snippet": "Choosing the right TypeScript backend framework in 2026? In this video, I compare ... ai #programming #claudecode.",
+      "source": ""
+    },
+    {
+      "title": "Best Backend Frameworks for 2026: Top Choices for Scalable Web Development - Dev\u014dt \u2014 Dev\u014dt",
+      "url": "https://devot.team/blog/best-backend-frameworks",
+      "published_at": "",
+      "snippet": "# Best Backend Frameworks to Use in 2026. Iva P.18 min readApr 10, 2026Technology. What are the best backend web frameworks? Is Node.js still worth using in 2026? Why is Laravel still one of the best PHP frameworks? How do you choose the best framework for backend development? What trends are shaping backend frameworks in 2026? Understanding the Rules, Risks, and EthicsLegal and ethical boundaries",
+      "source": ""
+    },
+    {
+      "title": "How to Choose the Best Backend Frameworks for Your Application in 2026",
+      "url": "https://thinkpalm.com/blogs/how-to-choose-the-right-backend-framework-for-ai-powered-software-a-business-leaders-guide",
+      "published_at": "",
+      "snippet": "# How to Choose the Best Backend Frameworks in 2026 for AI-Powered Software: A Business Leader\u2019s Guide. But the working of \u2018behind the scenes\u2019 of a web development system\u00a0i.e. in the backend. Choosing backend frameworks for web development is so important\u00a0as they form the foundation of a website\u2019s speed, stability, and scalability. As technology evolves, businesses need to choose the best backend ",
+      "source": ""
+    },
+    {
+      "title": "Best Frameworks for AI-Assisted Development 2026 - Complete Comparison \u2013 Encore",
+      "url": "https://encore.dev/articles/best-frameworks-ai-assisted-development",
+      "published_at": "",
+      "snippet": "# Best Frameworks for AI-Assisted Development 2026. ## Which frameworks produce the best results when AI writes the code. But the framework you choose determines how good that code actually is. Some frameworks give AI clear conventions and structured patterns to follow, producing consistent output you can ship. This guide compares frameworks based on how well they work with AI coding assistants: t",
+      "source": ""
+    },
+    {
+      "title": "Best Backend Frameworks 2026: Top Server-Side Tools Every Full-Stack Developer Should Know",
+      "url": "https://www.quartzdevs.com/resources/best-backend-frameworks-2026-top-server-side-tools",
+      "published_at": "",
+      "snippet": "# Best Backend Frameworks 2026: Top Server-Side Tools Every Full-Stack Developer Should Know. Discover the best backend frameworks in 2026, including Express.js, NestJS, FastAPI, Laravel, Spring Boot, and more. This beginner-friendly comparison guide helps you choose the right server-side framework for performance, scalability, and developer experience. # Best Backend Frameworks 2026: Top Server-S",
+      "source": ""
+    },
+    {
+      "title": "Choosing the Right Tech Stack: .NET vs Node.js vs Python ...",
+      "url": "https://www.cogtix.com/blogs/choosing-the-right-tech-stack-net-vs-node-js-vs-python-for-product-startups",
+      "published_at": "",
+      "snippet": "For startups working on AI, machine learning, or automation-heavy platforms, Python is often the clear winner. Its clean, readable syntax and vast ecosystem of",
+      "source": ""
+    },
+    {
+      "title": "Node.js vs Python: Which Backend Is Right for Your Project?",
+      "url": "https://www.groovyweb.co/blog/nodejs-vs-python-backend-comparison-2026",
+      "published_at": "",
+      "snippet": "# Node.js vs Python for Backend: Which Wins in 2026? ## Node.js vs Python for AI-First Backends: The 2026 Decision Guide. **In 2026, choosing between Node.js and Python for your backend is no longer an either/or decision \u2014 and Express vs Next.js is the framework choice within Node.js \u2014 it is an architecture decision about which runtime handles which layer.**. At Groovy Web, our AI Agent Teams buil",
+      "source": ""
+    },
+    {
+      "title": "Python vs Node.js for AI Development: Which One Should You Choose? - DEV Community",
+      "url": "https://dev.to/clickit_devops/python-vs-nodejs-for-ai-development-which-one-should-you-choose-22cf",
+      "published_at": "",
+      "snippet": "## DEV Community. # Python vs Node.js for AI Development: Which One Should You Choose? When you're building an AI-powered app, choosing the right tech stack can make or break your project. Two popular options, **Python** and **Node.js**, each come with their own strengths, but which one truly fits your needs? It's great for building and training complex models and has a huge support community for ",
+      "source": ""
+    },
+    {
+      "title": "Choosing the Right Tech Stack: Python vs Node.js for AI and Product | Vishal R Gadiya posted on the topic | LinkedIn",
+      "url": "https://www.linkedin.com/posts/vishal-gadiya_when-i-was-working-with-a-startup-and-we-activity-7425526757270700032-xGmZ",
+      "published_at": "",
+      "snippet": "To view or add a comment, [sign in](https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Fposts%2Fneul-labs-limited_your-python-llm-stack-is-mass-producing-bottlenecks-activity-7431472857534066688-UvBt&trk=public_post_feed-cta-banner-cta). Live demo:[https://lnkd.in/dsiarid7](https://www.linkedin.com/redir/redirect?url=https%3A%2F%2Flnkd%2Ein%2Fdsiarid7&urlhas",
+      "source": ""
+    },
+    {
+      "title": "Node.js vs Python: Which Backend Technology to Choose in 2025?",
+      "url": "https://mobilunity.com/blog/node-js-vs-python",
+      "published_at": "",
+      "snippet": "Home / Blog / Technologies / Backend / Node.js / Node.js vs Python: Choose the Right Backend Technology for Your Business. # Node.js vs Python: Choose the Right Backend Technology for Your Business. * An Overview of Python and Node.js Programming Languages for Web Development. * How Mobilunity Can Help You. Node.js and Python continue to be among the leading options for server-side development, wi",
+      "source": ""
+    },
+    {
+      "title": "Python vs Node.js for AI Development: Which is Best ...",
+      "url": "https://www.youtube.com/watch?v=DfZxrZE0ZMY",
+      "published_at": "",
+      "snippet": "Choose Python if your project involves heavy AI or machine learning development data analysis or rapid prototyping of AI models.",
+      "source": ""
+    },
+    {
+      "title": "Flying Fast and Furious: AI-Powered FastAPI Deployments",
+      "url": "https://dev.to/dev3l/flying-fast-and-furious-ai-powered-fastapi-deployments-3kb9",
+      "published_at": "",
+      "snippet": "Leverage AI tools to deploy a FastAPI app on Fly.io using GitHub Actions. Start with a template, create endpoints in `api.py`, and set up",
+      "source": ""
+    },
+    {
+      "title": "FastAPI Cloud",
+      "url": "https://fastapicloud.com",
+      "published_at": "",
+      "snippet": "Deploy your FastAPI app to production in seconds with a single command. FastAPI Cloud streamlines the process of building, deploying, and accessing an API with minimal effort. If anyone can build a truly Pythonic cloud, it's the FastAPI team.\". CPython core developer, asyncio, uvloop, asyncpg, Vercel> \"FastAPI has entered the pantheon of no-brainer tools in Python, I've no doubt FastAPI Cloud will",
+      "source": ""
+    },
+    {
+      "title": "r/FastAPI on Reddit: What is the best/verified way which you ...",
+      "url": "https://www.reddit.com/r/FastAPI/comments/1mw9tg2/what_is_the_bestverified_way_which_you_honestly",
+      "published_at": "",
+      "snippet": "That's Kuberns. It's the world's first Agentic AI Deployment Platform and it handles FastAPI deployment automatically from your GitHub repo.",
+      "source": ""
+    },
+    {
+      "title": "FastAPI for AI Projects - Getting Started in 15 Minutes - YouTube",
+      "url": "https://www.youtube.com/watch?v=-IaCV5-mlSk",
+      "published_at": "",
+      "snippet": "... deploy their models and move from local demos to scalable ... AI demos into production-ready applications with this FastAPI tutorial!",
+      "source": ""
+    },
+    {
+      "title": "Tutorial - Deploy and call a spam classifier with FastAPI - Help Center",
+      "url": "https://help.ovhcloud.com/csm/en-public-cloud-ai-deploy-fastapi-spam-classifier?id=kb_article_view&sysparm_article=KB0048128",
+      "published_at": "",
+      "snippet": "Objective. The objective of this tutorial is to deploy an API for Spam classification. The use case is the Spam Ham Collection Dataset.",
+      "source": ""
+    },
+    {
+      "title": "Building a serverless GenAI API with FastAPI, AWS, and CircleCI - CircleCI",
+      "url": "https://circleci.com/blog/building-a-serverless-genai-api",
+      "published_at": "",
+      "snippet": "Once your FastAPI application is set up locally, you will need to wrap it in a handler that AWS Lambda can invoke when requests come in via API Gateway. You can add it into AWS Secrets Manager and update the `main.py` so that depending on where you run the app, the corresponding `OPENAI_API_KEY` is used. Then, update the `get_openai_api_key` function in the `main.py` file to allow retrieval of the",
+      "source": ""
+    },
+    {
+      "title": "The 2026 State of Node.js: Node 24, Performance Benchmarks, and ...",
+      "url": "https://javascript.plainenglish.io/the-2026-state-of-node-js-node-24-performance-benchmarks-and-the-future-of-server-runtimes-91506fa4aab4",
+      "published_at": "",
+      "snippet": "Bun often wins micro-benchmarks; Node wins long-running, memory-sensitive workloads; Deno wins security-first environments. Raw speed",
+      "source": ""
+    },
+    {
+      "title": "Node vs Bun vs Deno in 2026: The Brutally Honest Benchmarks No ...",
+      "url": "https://blog.devgenius.io/node-vs-bun-vs-deno-in-2026-the-brutally-honest-benchmarks-no-one-talks-about-aa5b74d83bbe",
+      "published_at": "",
+      "snippet": "The 6x throughput advantage Bun had on Hello World became a 3% advantage on a realistic workload. Your runtime is not your bottleneck. Your",
+      "source": ""
+    },
+    {
+      "title": "Debugging Node.js Performance with AI - Platformatic Blog",
+      "url": "https://blog.platformatic.dev/debugging-nodejs-performance-with-ai",
+      "published_at": "",
+      "snippet": "Optimize Node.js performance with AI-assisted debugging using markdown analysis, converting complex profiles into actionable insights",
+      "source": ""
+    },
+    {
+      "title": "AI Benchmarks 2026: Top Evaluations and Their Limits",
+      "url": "https://kili-technology.com/blog/ai-benchmarks-guide-the-top-evaluations-in-2026-and-why-theyre-not-enough",
+      "published_at": "",
+      "snippet": "Learn best practices for combining LLM-as-a-judge and HITL workflows for reliable AI. # AI Benchmarks Guide: The Top Evaluations in 2026 and Why They're Not Enough. This guide maps every major 2026 evaluation category and explains why human expert review still wins. AI benchmarks dominate how artificial intelligence models are compared, funded, and deployed, but the gap between benchmark scores an",
+      "source": ""
+    },
+    {
+      "title": "AI model benchmarks 2026: GPT, Claude, Gemini compared - Logic",
+      "url": "https://logic.inc/resources/ai-model-benchmarks-guide",
+      "published_at": "",
+      "snippet": "Samira Qureshi[April 9, 2026](https://logic.inc/resources/ai-model-benchmarks-guide). *   [\u2022What AI model benchmarks are and why they matter](https://logic.inc/resources/ai-model-benchmarks-guide#what-ai-model-benchmarks-are-and-why-they-matter). *   [\u2022The major benchmark categories in March 2026](https://logic.inc/resources/ai-model-benchmarks-guide#the-major-benchmark-categories-in-march-2026). ",
+      "source": ""
+    },
+    {
+      "title": "Why Python Is the Preferred Language for AI Development - Techstrong.ai",
+      "url": "https://techstrong.ai/features/why-python-is-the-preferred-language-for-ai-development",
+      "published_at": "",
+      "snippet": "# Why Python Is the Preferred Language for AI Development. Machine learning and artificial intelligence are no longer fringe technologies\u2014they\u2019re foundational to the global economy\u2019s next phase of growth. According to Citrusbug\u2019s Top Machine Learning Statistics for 2024, machine learning and AI are expected to contribute 14% to global GDP over the next decade, amounting to a staggering $14 trillio",
+      "source": ""
+    },
+    {
+      "title": "Best AI Tech Stack for Startups: Python, Node.js & Next.js",
+      "url": "https://www.krishangtechnolab.com/blog/ai-tech-stack-for-startups-guide",
+      "published_at": "",
+      "snippet": "# Tech Stack for AI Startups: Python, Node.js, Next.js. **Quick Overview:** *Explore the ideal AI tech stack for startups using Python, Node.js, and Next.js. Learn how this powerful combination enables scalable AI development, real-time APIs, high-performance frontends, and future-ready architecture for building fast-growing, AI-first products.*. Now, choosing the best AI tech stack for a startup ",
+      "source": ""
+    },
+    {
+      "title": "6 Reasons To Choose Python For Backend Development | Thinkitive",
+      "url": "http://www.thinkitive.com/blog/6-reasons-to-choose-python-for-backend-development",
+      "published_at": "",
+      "snippet": "# 6 Reasons To Choose Python For Backend Development. meta-image2-1024x535 6 Reasons To Choose Python For Backend Development. Python is a language that offers many in-built libraries and smaller code sizes, making it popular with developers. Lots of websites use Python for back-end development because of the versatility of Python. Moreover, Python for the backend proves to be a blessing for web d",
+      "source": ""
+    },
+    {
+      "title": "Why do people use Python for backend development even though ...",
+      "url": "https://www.quora.com/Why-do-people-use-Python-for-backend-development-even-though-other-technologies-like-Node-js-are-better-built-in-Async-and-REST-support-faster-flexible",
+      "published_at": "",
+      "snippet": "Python is a higher-abstraction language and is both faster to develop in and better suited for programming algorithms, computations and business",
+      "source": ""
+    },
+    {
+      "title": "Why SaaS Companies Prefer Python for Scalable Backend ...",
+      "url": "https://www.synapseindia.com/article/why-saas-companies-prefer-python-for-scalable-backend-development-in-the-usa",
+      "published_at": "",
+      "snippet": "Python's simplicity, powerful frameworks, and scalability make it the preferred choice for SaaS backend development in the USA.",
+      "source": ""
+    },
+    {
+      "title": "Python Backend Development: A Complete Guide for Beginners | DataCamp",
+      "url": "https://www.datacamp.com/tutorial/python-backend-development",
+      "published_at": "",
+      "snippet": "# Python Backend Development: A Complete Guide for Beginners. This complete guide teaches you the fundamentals of Python backend development. The backend, often called the \"brains\" of a web application, handles the logic, database interactions, and server configurations that keep everything running smoothly. Python, known for its simplicity and versatility, has become a go-to language for backend ",
+      "source": ""
+    }
+  ],
+  "plan": {
+    "blog_title": "FastAPI vs Node.js for AI Backend Development in 2026",
+    "audience": "AI startups and developers",
+    "tone": "informative",
+    "blog_kind": "news_roundup",
+    "constraints": [
+      "recency_days=365",
+      "focus on benchmarks and deployment ecosystem"
+    ],
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Introduction to FastAPI and Node.js",
+        "goal": "Understand the basics of FastAPI and Node.js for AI backend development",
+        "bullets": [
+          "Overview of FastAPI and its features",
+          "Introduction to Node.js and its ecosystem",
+          "Comparison of FastAPI and Node.js for AI development"
+        ],
+        "target_words": 200,
+        "tags": [
+          "FastAPI",
+          "Node.js",
+          "AI backend development"
+        ],
+        "requires_research": true,
+        "requires_citations": true,
+        "requires_code": false
+      },
+      {
+        "id": 2,
+        "title": "Benchmarks and Performance Comparison",
+        "goal": "Analyze the performance benchmarks of FastAPI and Node.js for AI backend development",
+        "bullets": [
+          "Review of existing benchmarks and studies",
+          "Analysis of performance metrics such as requests-per-second and latency",
+          "Discussion of the implications of performance differences for AI startups"
+        ],
+        "target_words": 300,
+        "tags": [
+          "benchmarks",
+          "performance comparison",
+          "AI backend development"
+        ],
+        "requires_research": true,
+        "requires_citations": true,
+        "requires_code": false
+      },
+      {
+        "id": 3,
+        "title": "Deployment Ecosystem and Tools",
+        "goal": "Explore the deployment ecosystem and tools for FastAPI and Node.js",
+        "bullets": [
+          "Overview of deployment options for FastAPI and Node.js",
+          "Discussion of containerization and orchestration tools such as Docker and Kubernetes",
+          "Introduction to monitoring and logging tools for AI backend development"
+        ],
+        "target_words": 250,
+        "tags": [
+          "deployment ecosystem",
+          "containerization",
+          "orchestration"
+        ],
+        "requires_research": true,
+        "requires_citations": true,
+        "requires_code": false
+      },
+      {
+        "id": 4,
+        "title": "Why AI Startups Prefer Python and FastAPI",
+        "goal": "Understand the reasons why AI startups prefer Python and FastAPI for backend development",
+        "bullets": [
+          "Discussion of the advantages of Python for AI development",
+          "Introduction to the features and benefits of FastAPI for AI backend development",
+          "Analysis of the role of Python and FastAPI in the AI startup ecosystem"
+        ],
+        "target_words": 220,
+        "tags": [
+          "Python",
+          "FastAPI",
+          "AI startups"
+        ],
+        "requires_research": true,
+        "requires_citations": true,
+        "requires_code": false
+      },
+      {
+        "id": 5,
+        "title": "Conclusion and Future Outlook",
+        "goal": "Summarize the key findings and provide a future outlook for FastAPI and Node.js in AI backend development",
+        "bullets": [
+          "Summary of the key differences and trade-offs between FastAPI and Node.js",
+          "Discussion of the future trends and developments in AI backend development",
+          "Introduction to the implications of the findings for AI startups and developers"
+        ],
+        "target_words": 200,
+        "tags": [
+          "conclusion",
+          "future outlook",
+          "AI backend development"
+        ],
+        "requires_research": true,
+        "requires_citations": true,
+        "requires_code": false
+      }
+    ]
+  },
+  "image_specs": [
+    {
+      "placeholder": "[[IMAGE_1]]",
+      "filename": "fastapi-logo.png",
+      "alt": "FastAPI Logo",
+      "caption": "FastAPI is a popular Python framework for building high-performance APIs.",
+      "prompt": "Generate a realistic image of the FastAPI logo.",
+      "size": "1024x1024",
+      "quality": "medium"
+    },
+    {
+      "placeholder": "[[IMAGE_2]]",
+      "filename": "nodejs-logo.png",
+      "alt": "Node.js Logo",
+      "caption": "Node.js is a popular JavaScript runtime environment for building scalable applications.",
+      "prompt": "Generate a realistic image of the Node.js logo.",
+      "size": "1024x1024",
+      "quality": "medium"
+    },
+    {
+      "placeholder": "[[IMAGE_3]]",
+      "filename": "fastapi-vs-nodejs.png",
+      "alt": "FastAPI vs Node.js Comparison",
+      "caption": "A comparison of FastAPI and Node.js for AI backend development.",
+      "prompt": "Generate an illustration comparing FastAPI and Node.js, highlighting their key differences and trade-offs.",
+      "size": "1024x1024",
+      "quality": "medium"
+    }
+  ],
+  "sections_count": 5
+}

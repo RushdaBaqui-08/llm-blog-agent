@@ -1,0 +1,350 @@
+{
+  "mode": "hybrid",
+  "needs_research": true,
+  "queries": [
+    "RAG vs fine-tuning cost comparison",
+    "scalability of RAG and fine-tuning in production environments",
+    "latency differences between RAG and fine-tuning in real-world applications",
+    "companies using RAG for natural language processing",
+    "fine-tuning use cases in industry leaders"
+  ],
+  "evidence": [
+    {
+      "title": "RAG vs. Fine-Tuning vs. Hybrid: Choosing the Right AI Architecture",
+      "url": "https://www.actian.com/blog/databases/should-you-use-rag-or-fine-tune-your-llm",
+      "published_at": "",
+      "snippet": "# Should You Use RAG or Fine-Tune Your LLM? Post URL Check out this article:  Should You Use RAG or Fine-Tune Your LLM? * RAG dominates enterprise AI due to flexibility, but fine-tuning excels at scale, latency, and structured outputs. * RAG adds recurring costs from context and retrieval, while fine-tuning shifts cost upfront with stable per-query pricing. * Hybrid approaches combine retrieval wi",
+      "source": ""
+    },
+    {
+      "title": "Fine-Tuning vs. RAG - Chris Kuo/Dr. Dataman - Medium",
+      "url": "https://dataman-ai.medium.com/fine-tuning-vs-rag-e2aa8b193236",
+      "published_at": "",
+      "snippet": "Retrieval-Augmented Generation (RAG) is generally more cost-effective than fine-tuning, especially in terms of training and maintenance costs.",
+      "source": ""
+    },
+    {
+      "title": "RAG vs. Fine Tuning, a practical approach - Elasticsearch Labs",
+      "url": "https://www.elastic.co/search-labs/blog/rag-vs-fine-tuning",
+      "published_at": "",
+      "snippet": "Fine Tuning, a practical approach. Comparing RAG and fine-tuning tools with the practical example of an e-commerce chatbot. To build the best search solutions for your use case, start a free cloud trial or try Elastic on your local machine now. This article provides a practical comparison of Retrieval Augmented Generation\") (RAG) and fine-tuning by examining their performance in a chat box scenari",
+      "source": ""
+    },
+    {
+      "title": "RAG vs fine tuning, a financial comparison : r/LocalLLM - Reddit",
+      "url": "https://www.reddit.com/r/LocalLLM/comments/1ep4d6c/rag_vs_fine_tuning_a_financial_comparison",
+      "published_at": "",
+      "snippet": "Fine-tuning improves inference in a domain. RAG actually allows an LLM to include specific content in responses. Trying to make sure I'm",
+      "source": ""
+    },
+    {
+      "title": "RAG vs Fine Tuning: The Ultimate Side by Side Comparison",
+      "url": "https://aisera.com/blog/llm-fine-tuning-vs-rag",
+      "published_at": "",
+      "snippet": "# RAG vs Fine Tuning. RAG LLM vs Fine-tuning LLM. When you want to improve LLMs\u2019 performance for a specific task, two methods stand out: Retrieval-Augmented Generation (RAG) and Fine-Tuning. RAG gives a model new external knowledge on the fly, while fine-tuning adjusts the model\u2019s core behavior and skills. RAG stands for retrieval augmented generation and is a technique that boosts a foundation mo",
+      "source": ""
+    },
+    {
+      "title": "RAG vs. Fine-tuning - IBM",
+      "url": "https://www.ibm.com/think/topics/rag-vs-fine-tuning",
+      "published_at": "",
+      "snippet": "[](https://www.ibm.com/think/topics/rag-vs-fine-tuning). [Retrieval augmented generation (RAG)](https://research.ibm.com/blog/retrieval-augmented-generation-RAG) and [fine-tuning](https://www.ibm.com/topics/fine-tuning) are two methods enterprises can use to get more value out of [large language models (LLMs)](https://www.ibm.com/topics/large-language-models). The difference between RAG and fine-t",
+      "source": ""
+    },
+    {
+      "title": "Scale RAG for production | Anyscale Docs",
+      "url": "https://docs.anyscale.com/rag/production-scalability",
+      "published_at": "",
+      "snippet": "# Scale RAG for production. Moving from a RAG prototype to a production system requires you to address challenges in data processing scale, retrieval latency, inference throughput, and operational reliability. This guide shows how Ray and Anyscale address these challenges with distributed data processing, scalable model serving, and managed infrastructure. If you're new to RAG, see Retrieval-augme",
+      "source": ""
+    },
+    {
+      "title": "From Development to Production: Building a Fine-Tuned and Observable RAG Pipeline for Contextual\u2026",
+      "url": "https://medium.com/@shramanpadhalni/from-development-to-production-building-a-fine-tuned-and-observable-rag-pipeline-for-contextual-e6eddba56531",
+      "published_at": "",
+      "snippet": "# From Development to Production: Building a Fine-Tuned and Observable RAG Pipeline for Contextual Question Answering | by Hem Chandra Padhalni | Medium. # From Development to Production: Building a Fine-Tuned and Observable RAG Pipeline for Contextual Question Answering. ## Introduction: Building a Production-Ready Retrieval-Augmented Generation (RAG) System from Scratch. To address these challen",
+      "source": ""
+    },
+    {
+      "title": "RAG in Production: Best Practices for Robust and Scalable Systems",
+      "url": "https://www.reddit.com/r/LangChain/comments/1e8oct1/rag_in_production_best_practices_for_robust_and",
+      "published_at": "",
+      "snippet": "In this article, I explore how to effectively implement Retrieval-Augmented Generation (RAG) models in production environments.",
+      "source": ""
+    },
+    {
+      "title": "RAG vs. fine-tuning: Choosing the right method for your LLM",
+      "url": "https://www.superannotate.com/blog/rag-vs-fine-tuning",
+      "published_at": "",
+      "snippet": "fine-tuning: Choosing the right method for your LLM. When setting up a language model for specific tasks, two key approaches often come into play: retrieval augmented generation (RAG) and fine-tuning. Each method brings distinct advantages, and choosing the right one is crucial for the model\u2019s performance in targeted environments. In this article, we'll explore both RAG and fine-tuning in detail. ",
+      "source": ""
+    },
+    {
+      "title": "RAG vs Fine-Tuning: Preventing Hallucinations at Scale",
+      "url": "https://aws.plainenglish.io/rag-vs-fine-tuning-preventing-hallucinations-at-scale-47bc78c59c5b",
+      "published_at": "",
+      "snippet": "RAG and Fine-Tuning are not competing ideas. They are complementary tools for controlling uncertainty. RAG keeps models honest. Fine-tuning",
+      "source": ""
+    },
+    {
+      "title": "Fine-tuning versus RAG in Generative AI Applications Architecture",
+      "url": "https://harsha-srivatsa.medium.com/fine-tuning-versus-rag-in-generative-ai-applications-architecture-d54ca6d2acb8",
+      "published_at": "",
+      "snippet": "RAG tends to have a slightly higher latency due to its two-step process \u2014 first retrieving relevant information and then generating a response.",
+      "source": ""
+    },
+    {
+      "title": "RAG vs. Fine Tuning | B EYE",
+      "url": "https://b-eye.com/blog/rag-vs-fine-tuning",
+      "published_at": "",
+      "snippet": "Maximize the impact of your data with B EYE\u2019s Data Analytics services. # RAG vs Fine Tuning: The Hidden Trade-offs No One Talks About. Home / AI & Data Trends / RAG vs Fine Tuning: The Hidden Trade-offs No One Talks About. This guide unpacks the strengths and limitations of both approaches, explores real-world applications, and answers key questions in an FAQ section \u2014 helping you make an informed",
+      "source": ""
+    },
+    {
+      "title": "RAG vs. Fine Tuning - YouTube",
+      "url": "https://www.youtube.com/watch?v=00Q0G84kq3M",
+      "published_at": "",
+      "snippet": "... of Retrieval Augmented Generation (RAG) and fine-tuning in ... This video covers the strengths, weaknesses, and common applications of",
+      "source": ""
+    },
+    {
+      "title": "RAG & Fine-Tuning: Choosing Your LLM Optimization Strategy | DataMotion",
+      "url": "https://datamotion.com/rag-vs-fine-tuning",
+      "published_at": "",
+      "snippet": "While fine-tuning modifies a model\u2019s internal knowledge by retraining it on new datasets, RAG retrieves up-to-date, external data at inference time. * **Retrieval Augmented Generation (RAG)**: Allows AI models to access and incorporate the latest relevant data at inference time, ensuring responses are based on real-time, external knowledge rather than static, pre-trained information. With RAG, AI ",
+      "source": ""
+    },
+    {
+      "title": "Understanding RAG vs Fine-Tuning",
+      "url": "https://cohere.com/blog/rag-vs-fine-tuning",
+      "published_at": "",
+      "snippet": "Our fastest, most powerful language model yet - available open-source. An enterprise-ready AI platform that powers modern workplace productivity. An intelligent search and discovery system to surface business insights. High-performance models for agentic, multimodal, multilingual AI. A speech recognition model for generating highly accurate audio transcripts. A family of multilingual research mode",
+      "source": ""
+    },
+    {
+      "title": "10 RAG examples and use cases from real companies",
+      "url": "https://www.evidentlyai.com/blog/rag-examples",
+      "published_at": "",
+      "snippet": "This approach helps ground LLM outputs in trusted data sources, such as company policies or documents. For example, when a company uses RAG for customer support, the AI would search through support documentation before responding to a customer query, ensuring the answer aligns with current company guidelines. The company developed an in-house solution that combines three key components: the RAG sy",
+      "source": ""
+    },
+    {
+      "title": "Retrieval-augmented generation (RAG) and natural language processing | Fast Data Science\u00ae",
+      "url": "https://fastdatascience.com/generative-ai/retrieval-augmented-generation-nlp",
+      "published_at": "",
+      "snippet": "# Retrieval-augmented generation (RAG) and natural language processing. Retrieval-augmented generation (RAG) allows LLMs such as ChatGPT to stay up to date in their responses. ## What is retrieval-augmented generation (RAG)? With RAG, we augment the request by retrieving relevant documents from the knowledge base and feeding them to the LLM along with the original prompt. **A demonstration of the ",
+      "source": ""
+    },
+    {
+      "title": "Redefining development: The retrieval-augmented generation (RAG) revolution in software engineering",
+      "url": "https://www.redhat.com/en/blog/redefining-development-retrieval-augmented-generation-rag-revolution-software-engineering",
+      "published_at": "",
+      "snippet": "Build, deploy, and monitor AI models and apps. Simplify the way you build, deploy, and manage apps. Code, build, deploy, and monitor security-focused software. Learn how to use our cloud products and solutions at your own pace in the Red\u00a0Hat\u00ae Hybrid Cloud Console. Develop and deploy AI solutions across the hybrid cloud. Discover resources and tools to help you build, deliver, and manage cloud-nati",
+      "source": ""
+    },
+    {
+      "title": "Supercharge productivity: 5 retrieval-augmented generation use cases",
+      "url": "https://outshift.cisco.com/blog/ai-ml/retrieval-augmented-generation-use-cases",
+      "published_at": "",
+      "snippet": "By employing a RAG technique, companies can integrate data from multiple interaction points via APIs (while respecting privacy and consent) and",
+      "source": ""
+    },
+    {
+      "title": "RAG and Natural Language Processing Models: A Powerful Synergy",
+      "url": "https://www.novusasi.com/blog/rag-and-natural-language-processing-a-powerful-synergy",
+      "published_at": "",
+      "snippet": "Key Use Cases of RAG in Natural Language Processing Models \u00b7 Enhanced Question Answering Systems \u00b7 Improved Conversational Agents and Chatbots",
+      "source": ""
+    },
+    {
+      "title": "Enhancing NLP with Retrieval-Augmented Generation - YouTube",
+      "url": "https://www.youtube.com/watch?v=TQPvK-pFAD8",
+      "published_at": "",
+      "snippet": "In the evolving landscape of Natural Language Processing (NLP), Retrieval-Augmented Generation (RAG) stands out as a powerful technique that",
+      "source": ""
+    },
+    {
+      "title": "Fine-Tuning LLMs for Business: Complete Use Cases Guide",
+      "url": "https://www.digitalapplied.com/blog/fine-tuning-llms-business-use-cases-guide",
+      "published_at": "",
+      "snippet": "# Fine-Tuning LLMs for Business: Complete Use Cases Guide. When and how to fine-tune LLMs for business. Customer service, content generation, and code completion use cases with cost-benefit analysis. The 2026 fine-tuning paradigm has shifted from \"train a base model\" to **Model Distillation**. Use GPT-5.2 (Teacher) to generate high-quality synthetic training data, then fine-tune a smaller model (G",
+      "source": ""
+    },
+    {
+      "title": "[D] Fine-tuning is making big money\u2014how? : r/MachineLearning",
+      "url": "https://www.reddit.com/r/MachineLearning/comments/1imwnnp/d_finetuning_is_making_big_moneyhow",
+      "published_at": "",
+      "snippet": "My use case for fine tuning is to use a smaller cheaper model for a specialized task. I talked to a PM at a major AI hosting company who told me",
+      "source": ""
+    },
+    {
+      "title": "Fine-Tuning AI Models, as a Leader do you care? | Hitesh Govind",
+      "url": "https://www.linkedin.com/posts/hitesh-govind-ai_artificialintelligence-machinelearning-activity-7375229731950006272-yjQk",
+      "published_at": "",
+      "snippet": "Fine-Tuning AI Models, as a Leader do you care? When most leaders hear \u201cAI customization\u201d, they imagine coding and data science.",
+      "source": ""
+    },
+    {
+      "title": "Tuning gen-AI? Here's the top 5 ways hundreds of orgs are doing it.",
+      "url": "https://cloud.google.com/transform/top-five-gen-ai-tuning-use-cases-gemini-hundreds-of-orgs",
+      "published_at": "",
+      "snippet": "Here's the top 5 ways hundreds of orgs are doing it. # Hundreds of organizations are fine-tuning Gemini models. Many organizations continue experimenting with the best ways to utilize AI models within their organizations, particularly when it comes to the specific needs of their teams or their sector. *   Fine-tuning AI models is proving itself as a valuable way for organizations to customize mode",
+      "source": ""
+    },
+    {
+      "title": "What is Fine-Tuning? | IBM",
+      "url": "https://www.ibm.com/think/topics/fine-tuning",
+      "published_at": "",
+      "snippet": "Fine-tuning in machine learning is the process of adapting a pre-trained model for specific tasks or use cases. It has become a fundamental deep learning technique, particularly in the training process of foundation models used for generative AI. Fine-tuning could be considered a subset of the broader technique of *transfer learning*: the practice of leveraging knowledge an existing model has alre",
+      "source": ""
+    },
+    {
+      "title": "What is fine-tuning? A guide to fine-tuning LLMs",
+      "url": "https://cohere.com/blog/fine-tuning",
+      "published_at": "",
+      "snippet": "An enterprise-ready AI platform that powers modern workplace productivity. An intelligent search and discovery system to surface business insights. A family of high-performance, scalable language models. A speech recognition model for generating highly accurate audio transcripts. A family of multilingual research models covering 70+ languages. A leading multimodal search and retrieval tool. A powe",
+      "source": ""
+    }
+  ],
+  "plan": {
+    "blog_title": "RAG vs Fine-Tuning: Choosing the Right Approach for Your AI Architecture",
+    "audience": "AI and machine learning professionals",
+    "tone": "informative",
+    "blog_kind": "explainer",
+    "constraints": [
+      "examine the cost implications of both RAG and fine-tuning",
+      "evaluate scalability and latency in real-world scenarios",
+      "use recent examples from companies that have successfully implemented these methods"
+    ],
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Understanding RAG and Fine-Tuning Basics",
+        "goal": "Explain the fundamental differences between RAG and fine-tuning, including how they enhance language model performance.",
+        "bullets": [
+          "Define Retrieval-Augmented Generation (RAG) and its application in language models",
+          "Describe fine-tuning and its role in adjusting a model's core behavior and skills",
+          "Discuss the scenarios where each method is most effective"
+        ],
+        "target_words": 200,
+        "tags": [
+          "RAG",
+          "fine-tuning",
+          "language models"
+        ],
+        "requires_research": true,
+        "requires_citations": true,
+        "requires_code": false
+      },
+      {
+        "id": 2,
+        "title": "Cost Implications of RAG and Fine-Tuning",
+        "goal": "Compare the cost structures of RAG and fine-tuning, including any recurring or upfront costs.",
+        "bullets": [
+          "Analyze the cost of training and maintaining RAG versus fine-tuning",
+          "Examine how RAG's context and retrieval add to its cost",
+          "Discuss the stable per-query pricing model of fine-tuning"
+        ],
+        "target_words": 250,
+        "tags": [
+          "cost comparison",
+          "RAG",
+          "fine-tuning"
+        ],
+        "requires_research": true,
+        "requires_citations": true,
+        "requires_code": false
+      },
+      {
+        "id": 3,
+        "title": "Evaluating Scalability and Latency",
+        "goal": "Assess the scalability and latency of both RAG and fine-tuning in production environments.",
+        "bullets": [
+          "Discuss how fine-tuning excels at scale and reduces latency",
+          "Explain the challenges of scaling RAG and strategies for overcoming them",
+          "Provide examples of companies that have successfully scaled these methods"
+        ],
+        "target_words": 300,
+        "tags": [
+          "scalability",
+          "latency",
+          "RAG",
+          "fine-tuning"
+        ],
+        "requires_research": true,
+        "requires_citations": true,
+        "requires_code": false
+      },
+      {
+        "id": 4,
+        "title": "Real-World Applications and Examples",
+        "goal": "Highlight real-world scenarios where RAG and fine-tuning have been applied, including their benefits and challenges.",
+        "bullets": [
+          "Present case studies of companies using RAG for its flexibility",
+          "Discuss instances where fine-tuning has been preferred for its scalability and structured outputs",
+          "Examine hybrid approaches that combine elements of both methods"
+        ],
+        "target_words": 300,
+        "tags": [
+          "case studies",
+          "RAG",
+          "fine-tuning",
+          "hybrid approaches"
+        ],
+        "requires_research": true,
+        "requires_citations": true,
+        "requires_code": false
+      },
+      {
+        "id": 5,
+        "title": "Choosing the Right Method for Your Use Case",
+        "goal": "Guide readers in selecting between RAG and fine-tuning based on their specific needs and goals.",
+        "bullets": [
+          "Outline the key factors to consider when deciding between RAG and fine-tuning",
+          "Provide a checklist for determining the most suitable method for a given project",
+          "Discuss the potential for combining RAG and fine-tuning in a hybrid approach"
+        ],
+        "target_words": 200,
+        "tags": [
+          "method selection",
+          "RAG",
+          "fine-tuning",
+          "hybrid"
+        ],
+        "requires_research": false,
+        "requires_citations": false,
+        "requires_code": false
+      }
+    ]
+  },
+  "image_specs": [
+    {
+      "placeholder": "[[IMAGE_1]]",
+      "filename": "cost_comparison.png",
+      "alt": "Cost comparison between RAG and fine-tuning",
+      "caption": "Cost comparison between RAG and fine-tuning",
+      "prompt": "Create an image showing a cost comparison between RAG and fine-tuning, with a graph or chart illustrating the differences in cost.",
+      "size": "1024x1024",
+      "quality": "medium"
+    },
+    {
+      "placeholder": "[[IMAGE_2]]",
+      "filename": "scalability_latency.png",
+      "alt": "Scalability and latency comparison between RAG and fine-tuning",
+      "caption": "Scalability and latency comparison between RAG and fine-tuning",
+      "prompt": "Create an image showing a scalability and latency comparison between RAG and fine-tuning, with a graph or chart illustrating the differences in scalability and latency.",
+      "size": "1024x1024",
+      "quality": "medium"
+    },
+    {
+      "placeholder": "[[IMAGE_3]]",
+      "filename": "hybrid_approach.png",
+      "alt": "Hybrid approach combining RAG and fine-tuning",
+      "caption": "Hybrid approach combining RAG and fine-tuning",
+      "prompt": "Create an image showing a hybrid approach combining RAG and fine-tuning, with a diagram or flowchart illustrating the combination of both methods.",
+      "size": "1024x1024",
+      "quality": "medium"
+    }
+  ],
+  "sections_count": 5
+}

@@ -1,1103 +1,631 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
+import Link from "next/link";
 
-// Types matching the API state
-interface Task {
-  id: number;
+// Nodes specification for the LangGraph interactive flowchart
+interface GraphNode {
+  id: string;
   title: string;
-  goal: string;
+  sublabel: string;
+  icon: string;
+  tech: string;
+  details: string;
   bullets: string[];
-  target_words: number;
-  tags?: string[];
-  requires_research?: boolean;
-  requires_citations?: boolean;
-  requires_code?: boolean;
+  footnote: string;
 }
 
-interface Plan {
-  blog_title: string;
+const GRAPH_NODES: GraphNode[] = [
+  {
+    id: "router",
+    title: "Case-Insensitive Router Node",
+    sublabel: "Evergreen vs. Search Routing",
+    icon: "🧭",
+    tech: "LangGraph Conditional Router",
+    details: "Analyzes the user's blog post request to determine the appropriate workflow strategy. Avoids unnecessary API costs by separating queries.",
+    bullets: [
+      "Performs case-insensitive checks on input queries.",
+      "Routes to Open-Book / Hybrid mode for real-time topics.",
+      "Routes directly to Evergreen mode for generic topics.",
+      "Configures search lookback dates dynamically."
+    ],
+    footnote: "Under the hood: Direct graph routing based on LLM decision matrices."
+  },
+  {
+    id: "research",
+    title: "Research Node",
+    sublabel: "Tavily Web Search Engine",
+    icon: "🔍",
+    tech: "Tavily API + URL Evidence Parser",
+    details: "Performs real-time web research to gather factual information, code references, and historical evidence for the topic.",
+    bullets: [
+      "Executes parallel queries using Tavily API.",
+      "Normalizes dates and filters evidence by publication date.",
+      "Performs URL and query deduplication to prevent redundant searches.",
+      "Compiles source citations and links for the article."
+    ],
+    footnote: "Fallbacks: Skips research gracefully if TAVILY_API_KEY is missing."
+  },
+  {
+    id: "orchestrator",
+    title: "Orchestrator Node",
+    sublabel: "Structured Blog Outline Planning",
+    icon: "📋",
+    tech: "Structured Plan Generator",
+    details: "Uses LLM reasoning to outline the final blog post structure, dividing the work into 5-9 independent sections.",
+    bullets: [
+      "Creates a detailed task checklist with sub-goals.",
+      "Specifies targeted word counts for each section.",
+      "Assigns specific flags (requires_code, requires_research, requires_citations).",
+      "Defines the target audience, tone, constraints, and keywords."
+    ],
+    footnote: "Output: A structured JSON outline matching the Plan interface."
+  },
+  {
+    id: "worker",
+    title: "Parallel Section Workers",
+    sublabel: "Concurrent Content Generation",
+    icon: "⚡",
+    tech: "Async Parallel Tasks",
+    details: "Generates multiple blog sections at the same time, speeding up the overall creation process.",
+    bullets: [
+      "Spawns asynchronous writing workers for each section in the plan.",
+      "Ensures inline citations ([Source](url)) are attached where required.",
+      "Injects clean, syntactically correct markdown formatting.",
+      "Maintains context using shared graph state variables."
+    ],
+    footnote: "Implements high-concurrency node workflows in LangGraph."
+  },
+  {
+    id: "reducer",
+    title: "Reducer Node",
+    sublabel: "Content Merge & Illustration Planning",
+    icon: "🧩",
+    tech: "State Reducer + Prompt Designer",
+    details: "Merges the independently written sections back into a cohesive markdown document and plans image layouts.",
+    bullets: [
+      "Stitches sections in chronological order.",
+      "Cleans up layout mismatches and redundant phrases.",
+      "Identifies logical insertion points for custom illustrations.",
+      "Generates detailed descriptive prompts for the image generator."
+    ],
+    footnote: "Transforms multiple section results back into a single blog state."
+  },
+  {
+    id: "imagegen",
+    title: "Image Gen Pipeline",
+    sublabel: "Google Imagen 4.0 & Fallbacks",
+    icon: "🖼️",
+    tech: "Imagen API + Pollinations AI Fallback",
+    details: "Illustrates the blog posts with high-quality visual aids, utilizing premium models with zero-dependency fallbacks.",
+    bullets: [
+      "Calls Google Imagen 4.0 for high-fidelity technical vector diagrams.",
+      "Detects rate-limits or quota errors automatically.",
+      "Falls back to Pollinations AI without interrupting the workflow.",
+      "Places images and caption specs in correct markdown tags."
+    ],
+    footnote: "Ensures 100% success rate even when API keys are restricted."
+  },
+  {
+    id: "sse",
+    title: "SSE Stream Engine",
+    sublabel: "Real-time Dashboard Connection",
+    icon: "📡",
+    tech: "FastAPI Server-Sent Events",
+    details: "Streams live state updates from the backend graph directly to the developer dashboard interface in real time.",
+    bullets: [
+      "Provides granular progress bars for parallel sections.",
+      "Streams system logs to the developer console.",
+      "Allows instant file previews while compilation runs.",
+      "Sends final zip packages of text and visual bundles."
+    ],
+    footnote: "Connection: Persistent EventSource channel on port 8000."
+  }
+];
+
+// Preloaded articles data for the showcase explorer
+interface ArticleShowcase {
+  title: string;
   audience: string;
   tone: string;
-  blog_kind: string;
-  constraints?: string[];
-  tasks: Task[];
+  category: string;
+  outline: { title: string; goal: string; words: number; tags: string[] }[];
+  markdown: string;
 }
 
-interface EvidenceItem {
-  title: string;
-  url: string;
-  published_at?: string;
-  snippet?: string;
-  source?: string;
-}
+const ARTICLE_SHOWCASE: ArticleShowcase[] = [
+  {
+    title: "FastAPI vs Node.js for AI Backend Development in 2026",
+    audience: "Technical Architects & CTOs",
+    tone: "Analytical and benchmark-driven",
+    category: "Technical Explainer",
+    outline: [
+      { title: "Introduction to FastAPI and Node.js", goal: "Overview of both web frameworks in AI-native contexts.", words: 250, tags: ["Research"] },
+      { title: "Benchmarks and Performance Comparison", goal: "Requests-per-second, memory footprint, and parallel concurrency test.", words: 400, tags: ["Code", "Research"] },
+      { title: "Deployment Ecosystem and Tools", goal: "Docker, Kubernetes, and modern cloud deployment integrations.", words: 350, tags: ["Citations"] },
+      { title: "Why AI Startups Prefer Python and FastAPI", goal: "Analysis of the ML library ecosystem and async execution benefit.", words: 300, tags: [] },
+      { title: "Conclusion and Future Outlook", goal: "Edge AI and serverless trends summary.", words: 200, tags: ["Citations"] }
+    ],
+    markdown: `# FastAPI vs Node.js for AI Backend Development in 2026
 
-interface ImageSpec {
-  placeholder: string;
-  filename: string;
-  alt: string;
-  caption: string;
-  prompt: string;
-  size: string;
-}
+## Introduction to FastAPI and Node.js
+FastAPI and Node.js are two popular frameworks used for AI backend development.
+- **FastAPI**: A modern, high-performance web framework for building APIs with Python 3.7+, based on standard Python type hints.
+- **Node.js**: A JavaScript runtime environment that allows developers to run JavaScript on the server-side, offering a vast ecosystem for building scalable web apps.
 
-interface BlogState {
-  node: string | null;
-  mode: string;
-  needs_research: boolean;
-  queries: string[] | null;
-  evidence_count: number;
-  evidence: EvidenceItem[];
-  plan: Plan | null;
-  sections_count: number;
-  completed_section_ids?: number[];
-  warning?: string | null;
-  image_specs: ImageSpec[] | null;
-  final: string;
-}
+According to recent benchmarks, FastAPI beats Node.js for AI-native applications [Source](https://www.linkedin.com/posts/sidharthsatapathy_from-frontend-to-ai-engineer-day-5-why-activity-7413206943416348672-toKX), being considered a highly optimized backend framework.
 
-interface PastBlog {
-  filename: string;
-  title: string;
-  updated_at: number;
-}
+## Benchmarks and Performance Comparison
+The performance of a backend framework is crucial for AI startups as it impacts speed. Recent studies reveal that FastAPI generally outperforms Node.js in latency when integrating LLM calls. Analysis of performance metrics shows:
+- FastAPI's native ASGI supports highly concurrent async network requests.
+- Node.js's single-threaded event loop can suffer when handling CPU-bound data parsing operations.
 
-function CodeBlock({ code, language }: { code: string; language: string }) {
-  const [copied, setCopied] = React.useState(false);
-  
-  const handleCopy = () => {
-    navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-  
-  const highlightCode = (rawCode: string, lang: string) => {
-    let escaped = rawCode
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
-       
-    if (!lang) return escaped;
-    
-    const lowerLang = lang.toLowerCase();
-    if (lowerLang === "python" || lowerLang === "js" || lowerLang === "javascript" || lowerLang === "ts" || lowerLang === "typescript" || lowerLang === "json") {
-      escaped = escaped.replace(/(#.*|\/\/.*)/g, '<span style="color: #6a9955">$1</span>');
-      escaped = escaped.replace(/(["'])(.*?)\1/g, '<span style="color: #ce9178">$1$2$1</span>');
-      const keywords = [
-        "def ", "class ", "return ", "import ", "from ", "as ", "if ", "else ", "elif ", "for ", "while ", "in ", "is ", "and ", "or ", "not ", "with ", "try ", "except ", "raise ", "await ", "async ",
-        "const ", "let ", "var ", "function ", "export ", "default ", "interface ", "type ", "extends ", "implements ", "new ", "true", "false", "null", "undefined"
-      ];
-      keywords.forEach(kw => {
-        const escapedKw = kw.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-        const regex = new RegExp(`\\b${escapedKw}`, 'g');
-        escaped = escaped.replace(regex, `<span style="color: #569cd6">${kw}</span>`);
-      });
-      escaped = escaped.replace(/\b(\d+)\b/g, '<span style="color: #b5cea8">$1</span>');
-    }
-    
-    return <span dangerouslySetInnerHTML={{ __html: escaped }} />;
-  };
-  
-  return (
-    <div className="custom-code-block" style={{
-      position: "relative",
-      background: "#0d1117",
-      borderRadius: "8px",
-      border: "1px solid rgba(255, 255, 255, 0.08)",
-      marginBottom: "20px",
-      overflow: "hidden",
-      fontFamily: "var(--font-mono)",
-      fontSize: "0.85rem"
-    }}>
-      <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        background: "#161b22",
-        padding: "8px 16px",
-        borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
-        color: "var(--text-muted)",
-        fontSize: "0.75rem",
-        textTransform: "uppercase",
-        fontWeight: 600,
-        letterSpacing: "0.05em"
-      }}>
-        <span>{language || "code"}</span>
-        <button
-          onClick={handleCopy}
-          style={{
-            background: "rgba(255, 255, 255, 0.05)",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
-            borderRadius: "4px",
-            padding: "4px 8px",
-            color: "var(--text-primary)",
-            cursor: "pointer",
-            transition: "all 0.2s ease"
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.15)"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; }}
-        >
-          {copied ? "✓ Copied!" : "📋 Copy"}
-        </button>
-      </div>
-      <pre style={{
-        margin: 0,
-        padding: "16px",
-        overflowX: "auto",
-        background: "transparent",
-        border: "none",
-        lineHeight: 1.5
-      }}>
-        <code style={{ background: "transparent", padding: 0, border: "none" }}>
-          {highlightCode(code, language)}
-        </code>
-      </pre>
-    </div>
-  );
-}
+## Deployment Ecosystem and Tools
+Both frameworks offer a range of deployment options:
+- Containerization tools like **Docker** and orchestration tools like **Kubernetes** are industry standards.
+- Monitoring and logging integrations with **Prometheus**, **Grafana**, and **ELK Stack** verify uptime.
+`
+  },
+  {
+    title: "RAG vs Fine-Tuning: Choosing the Right Approach for AI Architecture",
+    audience: "AI Engineers & Decision Makers",
+    tone: "Professional and objective",
+    category: "Architectural Guide",
+    outline: [
+      { title: "Defining RAG & Fine-Tuning Core Differences", goal: "Parametric vs. Non-parametric memory comparison.", words: 300, tags: ["Research"] },
+      { title: "Data Freshness and Knowledge Updates", goal: "Handling real-time vector indexes vs. expensive retraining weights.", words: 350, tags: ["Citations"] },
+      { title: "Cost Analysis: Compute & Vector Storage", goal: "Compute budgets, API embedding tokens, and database maintenance costs.", words: 400, tags: ["Code"] },
+      { title: "Accuracy, Hallucinations, and Factuality", goal: "Mitigating false information and anchoring responses with evidence.", words: 300, tags: ["Research"] },
+      { title: "Hybrid Approaches: RAG-Assisted Fine-Tuning", goal: "Combining both paradigms for domain-specific models.", words: 250, tags: ["Citations"] }
+    ],
+    markdown: `# RAG vs Fine-Tuning: Choosing the Right Approach for AI Architecture
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+## Defining RAG & Fine-Tuning Core Differences
+When architecting domain-specific LLM systems, developers face a critical choice: Retrieval-Augmented Generation (RAG) or Fine-Tuning.
+- **RAG**: Dynamically retrieves relevant context documents and injects them into the model's prompt window during inference.
+- **Fine-Tuning**: Permanently bakes knowledge and style behaviors into the model's neural weights through supervised training.
 
-export default function BlogDashboard() {
-  // Inputs
-  const [topic, setTopic] = useState("");
-  const [asOf, setAsOf] = useState("");
-  
-  // UI states
-  const [activeTab, setActiveTab] = useState<"plan" | "evidence" | "preview" | "images" | "logs">("preview");
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [logs, setLogs] = useState<{ time: string; msg: string; type: "info" | "success" | "error" | "warning" }[]>([]);
-  const [currentNode, setCurrentNode] = useState<string | null>(null);
-  const [copyBlogSuccess, setCopyBlogSuccess] = useState(false);
-  
-  // Loaded / Generated blog state
-  const [currentState, setCurrentState] = useState<BlogState | null>(null);
-  const [pastBlogs, setPastBlogs] = useState<PastBlog[]>([]);
-  const [selectedFilename, setSelectedFilename] = useState<string | null>(null);
+## Data Freshness and Knowledge Updates
+RAG excels at handling continuously updating data. Since the vector database can be indexed in real-time, the model immediately gains access to fresh source material. Fine-Tuning, conversely, requires subsequent training runs, which are time-consuming and costly.
 
-  const logsEndRef = useRef<HTMLDivElement>(null);
+## Cost Analysis: Compute & Vector Storage
+- **Fine-Tuning**: Requires significant upfront training compute costs but lowers per-token prompt costs.
+- **RAG**: Has negligible setup costs but incurs constant storage fees and increases prompt tokens due to large injected contexts.
+`
+  },
+  {
+    title: "Revolutionizing Software Development: The Rise of Multi-Agent AI Systems",
+    audience: "Software Engineers & Tech Leaders",
+    tone: "Inspiring and forward-looking",
+    category: "Industry Analysis",
+    outline: [
+      { title: "From Single Prompt to Collaborative Agent Networks", goal: "The evolution from chat prompts to state-based agentic graphs.", words: 300, tags: [] },
+      { title: "Orchestrator-Worker & Parallel Graph Design", goal: "How LangGraph structures complex concurrent workflows.", words: 450, tags: ["Code"] },
+      { title: "State Sharing, Validation & Memory Retention", goal: "Managing shared memory and validating worker outputs.", words: 350, tags: ["Research"] },
+      { title: "Real-world Applications & Developer Productivity", goal: "Practical workflows: writing, editing, and code compilation.", words: 400, tags: ["Research", "Citations"] },
+      { title: "Future Outlook: Self-Correcting Autonomous Workflows", goal: "Where multi-agent architectures are heading.", words: 250, tags: ["Citations"] }
+    ],
+    markdown: `# Revolutionizing Software Development: The Rise of Multi-Agent AI Systems
 
-  // Set default as-of date to today on client mount
-  useEffect(() => {
-    const today = new Date().toISOString().split("T")[0];
-    setAsOf(today);
-    fetchPastBlogs();
-  }, []);
+## From Single Prompt to Collaborative Agent Networks
+Software engineering is transitioning from simple chatbot completions to collaborative agent networks. These networks split a complex problem into smaller tasks managed by dedicated agents.
 
-  // Auto-scroll logs console to bottom
-  useEffect(() => {
-    if (logsEndRef.current) {
-      logsEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [logs]);
+## Orchestrator-Worker & Parallel Graph Design
+In an Orchestrator-Worker pattern:
+1. A master agent designs a structured task plan.
+2. The orchestrator delegates writing segments to parallel workers.
+3. Workers generate code and text in parallel, reducing overall time-to-output.
 
-  // Fetch past blogs list
-  const fetchPastBlogs = async () => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/blogs`);
-      if (res.ok) {
-        const data = await res.json();
-        setPastBlogs(data);
-      }
-    } catch (e) {
-      addLog("Failed to fetch past blogs list.", "error");
-    }
-  };
+## State Sharing, Validation & Memory Retention
+Managing a shared state enables multi-agent architectures to validate their output before presenting it to the user. If an agent's code block fails validation, the graph routes the error back to a compiler worker for self-correction.
+`
+  }
+];
 
-  // Log adding helper
-  const addLog = (msg: string, type: "info" | "success" | "error" | "warning" = "info") => {
-    const time = new Date().toLocaleTimeString();
-    setLogs((prev) => [...prev, { time, msg, type }]);
-  };
+export default function LandingPage() {
+  const [selectedNode, setSelectedNode] = useState<string>("router");
+  const [selectedArticleIdx, setSelectedArticleIdx] = useState<number>(0);
 
-  // Load a blog file
-  const loadBlog = async (filename: string) => {
-    try {
-      addLog(`Loading blog: ${filename}...`, "info");
-      const res = await fetch(`${API_BASE_URL}/api/blogs/${filename}`);
-      if (res.ok) {
-        const data = await res.json();
-        setSelectedFilename(filename);
-        setCurrentState({
-          node: "end",
-          mode: data.metadata?.mode || "loaded",
-          needs_research: data.metadata?.needs_research || false,
-          queries: data.metadata?.queries || null,
-          evidence_count: data.metadata?.evidence?.length || 0,
-          evidence: data.metadata?.evidence || [],
-          plan: data.metadata?.plan || {
-            blog_title: data.title,
-            audience: "Loaded from file",
-            tone: "N/A",
-            blog_kind: "explainer",
-            tasks: [],
-          },
-          sections_count: data.metadata?.sections_count || 0,
-          completed_section_ids: data.metadata?.completed_section_ids || [],
-          warning: null,
-          image_specs: data.metadata?.image_specs || null,
-          final: data.content,
-        });
-        setActiveTab("preview");
-        addLog(`Blog loaded successfully: ${data.title}`, "success");
-      } else {
-        addLog(`Failed to load blog: ${filename}`, "error");
-      }
-    } catch (e) {
-      addLog(`Error loading blog: ${e}`, "error");
-    }
-  };
-
-  // Delete a blog file
-  const deleteBlog = async (filename: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!confirm(`Are you sure you want to delete "${filename}"?`)) {
-      return;
-    }
-    try {
-      addLog(`Deleting blog: ${filename}...`, "info");
-      const res = await fetch(`${API_BASE_URL}/api/blogs/${filename}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        addLog(`Blog deleted successfully: ${filename}`, "success");
-        if (selectedFilename === filename) {
-          setSelectedFilename(null);
-          setCurrentState(null);
-        }
-        fetchPastBlogs();
-      } else {
-        const errData = await res.json();
-        addLog(`Failed to delete blog: ${errData.detail || res.statusText}`, "error");
-      }
-    } catch (err) {
-      addLog(`Error deleting blog: ${err}`, "error");
-    }
-  };
-
-  // Handle generation form submit
-  const handleGenerate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!topic.trim()) {
-      alert("Please enter a topic.");
-      return;
-    }
-
-    setIsGenerating(true);
-    setCurrentNode("router");
-    setSelectedFilename(null);
-    setLogs([]);
-    setActiveTab("logs");
-    addLog(`Starting agent run for topic: "${topic}"`, "info");
-    
-    // Reset state
-    setCurrentState({
-      node: "router",
-      mode: "",
-      needs_research: false,
-      queries: [],
-      evidence_count: 0,
-      evidence: [],
-      plan: null,
-      sections_count: 0,
-      completed_section_ids: [],
-      warning: null,
-      image_specs: null,
-      final: "",
-    });
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/generate`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          topic: topic.trim(),
-          as_of: asOf,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Server returned status ${response.status}`);
-      }
-
-      if (!response.body) {
-        throw new Error("Response body is not readable.");
-      }
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder("utf-8");
-      let buffer = "";
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        
-        buffer += decoder.decode(value, { stream: true });
-        const parts = buffer.split(/\r?\n\r?\n/);
-        buffer = parts.pop() || "";
-
-        for (const part of parts) {
-          if (!part.trim()) continue;
-          
-          const lines = part.split(/\r?\n/);
-          let eventName = "";
-          let dataStr = "";
-          
-          for (const line of lines) {
-            if (line.startsWith("event:")) {
-              eventName = line.slice(6).trim();
-            } else if (line.startsWith("data:")) {
-              dataStr = line.slice(5).trim();
-            }
-          }
-
-          if (eventName === "update" || eventName === "final") {
-            try {
-              const payload = JSON.parse(dataStr);
-              if (payload.error) {
-                addLog(`Agent error: ${payload.error}`, "error");
-                setIsGenerating(false);
-                break;
-              }
-
-              // Update node tracker
-              if (payload.node) {
-                setCurrentNode(payload.node);
-                addLog(`Entering state node: [${payload.node.toUpperCase()}]`, "info");
-              }
-
-              // Update state
-              setCurrentState((prev) => {
-                const newState = {
-                  node: payload.node || (prev ? prev.node : null),
-                  mode: payload.mode || (prev ? prev.mode : ""),
-                  needs_research: payload.needs_research !== undefined ? payload.needs_research : (prev ? prev.needs_research : false),
-                  queries: payload.queries || (prev ? prev.queries : null),
-                  evidence_count: payload.evidence_count !== undefined ? payload.evidence_count : (prev ? prev.evidence_count : 0),
-                  evidence: payload.evidence || (prev ? prev.evidence : []),
-                  plan: payload.plan || (prev ? prev.plan : null),
-                  sections_count: payload.sections_count !== undefined ? payload.sections_count : (prev ? prev.sections_count : 0),
-                  completed_section_ids: payload.completed_section_ids || (prev ? prev.completed_section_ids : []),
-                  warning: payload.warning || (prev ? prev.warning : null),
-                  image_specs: payload.image_specs || (prev ? prev.image_specs : null),
-                  final: payload.final || (prev ? prev.final : ""),
-                };
-                return newState;
-              });
-
-              if (payload.warning) {
-                addLog(`Warning: ${payload.warning}`, "warning");
-              }
-
-              if (eventName === "final") {
-                setCurrentNode("end");
-                setIsGenerating(false);
-                setActiveTab("preview");
-                addLog("Blog writing completed successfully!", "success");
-                fetchPastBlogs(); // refresh list
-                
-                // If a plan exists, calculate the filename
-                if (payload.plan && payload.plan.blog_title) {
-                  const slug = payload.plan.blog_title.trim().toLowerCase()
-                    .replace(/[^a-z0-9 _-]+/g, "")
-                    .replace(/\s+/g, "_")
-                    .replace(/^_+|_+$/g, "");
-                  setSelectedFilename(`${slug || "blog"}.md`);
-                }
-              }
-            } catch (err) {
-              console.error("Error parsing stream chunk", err);
-            }
-          } else if (eventName === "error") {
-            const payload = JSON.parse(dataStr);
-            addLog(`Error stream event: ${payload.error || dataStr}`, "error");
-            setIsGenerating(false);
-          }
-        }
-      }
-    } catch (err: any) {
-      addLog(`Network or execution error: ${err.message}`, "error");
-      setIsGenerating(false);
-    }
-  };
-
-  // Helper to parse Markdown inline formatting (bold, italic, links, inline code)
-  const renderInline = (text: string): React.ReactNode => {
-    if (!text) return "";
-    
-    // Split by markdown bold, italic, code, and link patterns
-    const regex = /(\*\*.*?\*\*|\*.*?\*|\[.*?\]\(.*?\)|`.*?`)/g;
-    const parts = text.split(regex);
-    
-    return parts.map((part, index) => {
-      if (part.startsWith("**") && part.endsWith("**")) {
-        return <strong key={index} style={{ color: "#ffffff", fontWeight: 600 }}>{part.slice(2, -2)}</strong>;
-      }
-      if (part.startsWith("*") && part.endsWith("*")) {
-        return <em key={index}>{part.slice(1, -1)}</em>;
-      }
-      if (part.startsWith("`") && part.endsWith("`")) {
-        return <code key={index}>{part.slice(1, -1)}</code>;
-      }
-      if (part.startsWith("[") && part.includes("](")) {
-        const closeBracket = part.indexOf("]");
-        const openParen = part.indexOf("(", closeBracket);
-        const closeParen = part.indexOf(")", openParen);
-        if (closeBracket !== -1 && openParen !== -1 && closeParen !== -1) {
-          const linkText = part.slice(1, closeBracket);
-          const linkUrl = part.slice(openParen + 1, closeParen);
-          return (
-            <a
-              key={index}
-              href={linkUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="markdown-link"
-              style={{ color: "var(--accent-emerald)", textDecoration: "underline" }}
-            >
-              {linkText}
-            </a>
-          );
-        }
-      }
-      return part;
-    });
-  };
-
-  // Helper to parse Markdown and render preview reactively
-  const renderMarkdown = (text: string) => {
-    if (!text) return <p>No preview content available.</p>;
-
-    const lines = text.split("\n");
-    const elements: React.ReactNode[] = [];
-    let key = 0;
-    
-    let inCodeBlock = false;
-    let codeContent: string[] = [];
-    let codeLanguage = "";
-
-    let inList = false;
-    let listItems: React.ReactNode[] = [];
-
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-
-      // Code Block handling
-      if (line.startsWith("```")) {
-        // If we are currently compiling a bullet list, close it first
-        if (inList) {
-          elements.push(<ul key={key++} style={{ marginBottom: "16px", paddingLeft: "24px" }}>{listItems}</ul>);
-          inList = false;
-          listItems = [];
-        }
-
-        if (inCodeBlock) {
-          elements.push(
-            <CodeBlock key={key++} code={codeContent.join("\n")} language={codeLanguage} />
-          );
-          codeContent = [];
-          codeLanguage = "";
-          inCodeBlock = false;
-        } else {
-          inCodeBlock = true;
-          codeLanguage = line.slice(3).trim();
-        }
-        continue;
-      }
-
-      if (inCodeBlock) {
-        codeContent.push(line);
-        continue;
-      }
-
-      // Bullet lists handling (ul/li block aggregation)
-      const isListItem = line.startsWith("- ") || line.startsWith("* ");
-      if (isListItem) {
-        if (!inList) {
-          inList = true;
-          listItems = [];
-        }
-        listItems.push(<li key={listItems.length} style={{ marginBottom: "6px" }}>{renderInline(line.slice(2))}</li>);
-        continue;
-      } else {
-        if (inList) {
-          elements.push(<ul key={key++} style={{ marginBottom: "16px", paddingLeft: "24px" }}>{listItems}</ul>);
-          inList = false;
-          listItems = [];
-        }
-      }
-
-      // Headers
-      if (line.startsWith("# ")) {
-        elements.push(<h1 key={key++}>{renderInline(line.slice(2))}</h1>);
-        continue;
-      }
-      if (line.startsWith("## ")) {
-        elements.push(<h2 key={key++}>{renderInline(line.slice(3))}</h2>);
-        continue;
-      }
-      if (line.startsWith("### ")) {
-        elements.push(<h3 key={key++}>{renderInline(line.slice(4))}</h3>);
-        continue;
-      }
-
-      // Blockquotes
-      if (line.startsWith("> ")) {
-        elements.push(<blockquote key={key++}>{renderInline(line.slice(2))}</blockquote>);
-        continue;
-      }
-
-      // Image render pattern e.g. ![alt](images/filename.png)
-      const imgMatch = line.match(/!\[(.*?)\]\((.*?)\)/);
-      if (imgMatch) {
-        const alt = imgMatch[1];
-        let src = imgMatch[2];
-        
-        // Rewrite local image paths to backend server
-        if (!src.startsWith("http") && src.includes("images/")) {
-          const filename = src.split("images/")[1];
-          src = `${API_BASE_URL}/images/${filename}`;
-        }
-        
-        elements.push(
-          <div key={key++} style={{ textAlign: "center", margin: "20px 0" }}>
-            <img 
-              src={src} 
-              alt={alt} 
-              style={{ maxWidth: "100%", borderRadius: "8px", border: "1px solid var(--border-glow)" }} 
-            />
-            {/* If the next line is a caption in italic, render it */}
-            {i + 1 < lines.length && lines[i + 1].startsWith("*") && lines[i + 1].endsWith("*") ? (
-              <span className="markdown-image-caption" style={{ display: "block", marginTop: "8px" }}>
-                {lines[++i].slice(1, -1)}
-              </span>
-            ) : (
-              alt && <span className="markdown-image-caption" style={{ display: "block", marginTop: "8px" }}>{alt}</span>
-            )}
-          </div>
-        );
-        continue;
-      }
-
-      // Parse inline formatting (bold, links, inline code)
-      if (line.trim()) {
-        elements.push(<p key={key++}>{renderInline(line)}</p>);
-      }
-    }
-
-    // Flush remaining list items if text ends on list
-    if (inList) {
-      elements.push(<ul key={key++} style={{ marginBottom: "16px", paddingLeft: "24px" }}>{listItems}</ul>);
-    }
-
-    return <div className="markdown-body">{elements}</div>;
-  };
+  const activeNodeData = GRAPH_NODES.find((node) => node.id === selectedNode) || GRAPH_NODES[0];
+  const activeArticle = ARTICLE_SHOWCASE[selectedArticleIdx];
 
   return (
-    <>
-      {/* Sidebar Past Blogs & Input */}
-      <aside className={`sidebar ${sidebarCollapsed ? "collapsed" : ""}`}>
-        <div className="sidebar-header">
-          <h2 className="sidebar-title">Blog Writer</h2>
-          <button 
-            className="sidebar-toggle-btn"
-            onClick={() => setSidebarCollapsed(true)}
-            style={{ border: "none", background: "transparent", fontSize: "1.2rem" }}
-          >
-            ✕
-          </button>
+    <div className="landing-container">
+      {/* Background glowing gradients */}
+      <div className="hero-glow-1"></div>
+      <div className="hero-glow-2"></div>
+
+      {/* Navigation Header */}
+      <nav className="landing-nav">
+        <div className="landing-nav-logo">
+          <span className="dot"></span>
+          BlogWriter <span style={{ color: "var(--text-secondary)", fontWeight: 400 }}>AI</span>
+        </div>
+        <div className="landing-nav-links">
+          <a href="#features">Features</a>
+          <a href="#workflow">Architecture</a>
+          <a href="#demo">Generated Blogs</a>
+          <Link href="/dashboard" className="landing-nav-btn">
+            Launch Console ⚡
+          </Link>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <header className="hero-section">
+        <h1 className="hero-title">
+          Unleash Autonomous <br />
+          <span className="highlight">Content Engineering</span>
+        </h1>
+        <p className="hero-desc">
+          An orchestrator-worker multi-agent AI assistant powered by <strong>LangGraph</strong>. 
+          Research the web, design structures, write sections in parallel, and generate visuals automatically.
+        </p>
+
+        <div className="hero-ctas">
+          <Link href="/dashboard" className="btn-hero-primary">
+            Launch Agent Dashboard ⚡
+          </Link>
+          <a href="#workflow" className="btn-hero-secondary">
+            Explore Architecture Graph
+          </a>
         </div>
 
-        <div className="sidebar-content">
-          <form onSubmit={handleGenerate}>
-            <div className="section-label">New Blog Configuration</div>
-            
-            <div className="config-group">
-              <label>Topic / Prompt</label>
-              <textarea
-                className="textarea-input"
-                placeholder="E.g., System Design of a Multi-Language RAG Chatbot using FastAPI and Next.js"
-                value={topic}
-                onChange={(e) => setTopic(e.target.value)}
-                disabled={isGenerating}
-                required
-              />
+        {/* Dashboard Mockup Browser Preview */}
+        <div className="hero-mockup-wrapper">
+          <div className="hero-mockup">
+            <div className="mockup-header">
+              <div className="mockup-dots">
+                <span className="mockup-dot dot-red"></span>
+                <span className="mockup-dot dot-yellow"></span>
+                <span className="mockup-dot dot-green"></span>
+              </div>
+              <div className="mockup-address">localhost:3000/dashboard</div>
+              <div style={{ width: "40px" }}></div>
             </div>
-
-            <div className="config-group">
-              <label>As-of Date</label>
-              <input
-                type="date"
-                className="date-input"
-                value={asOf}
-                onChange={(e) => setAsOf(e.target.value)}
-                disabled={isGenerating}
-              />
-            </div>
-
-            <button 
-              type="submit" 
-              className="btn-primary"
-              disabled={isGenerating}
-            >
-              {isGenerating ? "⚡ Generating..." : "🚀 Generate Blog"}
-            </button>
-          </form>
-
-          <div style={{ marginTop: "32px" }}>
-            <div className="section-label">Past Articles ({pastBlogs.length})</div>
-            <div className="past-blogs-list">
-              {pastBlogs.map((b) => (
-                <div
-                  key={b.filename}
-                  className={`past-blog-item ${selectedFilename === b.filename ? "active" : ""}`}
-                  onClick={() => {
-                    if (!isGenerating) loadBlog(b.filename);
-                  }}
-                  style={{ cursor: isGenerating ? "not-allowed" : "pointer" }}
-                >
-                  <div className="past-blog-content">
-                    <div className="past-blog-title" title={b.title}>{b.title}</div>
-                    <div className="past-blog-meta" title={`${b.filename} · ${new Date(b.updated_at * 1000).toLocaleDateString()}`}>
-                      {b.filename} · {new Date(b.updated_at * 1000).toLocaleDateString()}
+            <div className="mockup-body">
+              {/* Sidebar */}
+              <div className="mockup-sidebar">
+                <div className="mockup-sidebar-item active"></div>
+                <div className="mockup-sidebar-item"></div>
+                <div className="mockup-sidebar-item" style={{ width: "60%" }}></div>
+                <div style={{ marginTop: "auto", width: "50%" }} className="mockup-sidebar-item"></div>
+              </div>
+              {/* Main Panel */}
+              <div className="mockup-main">
+                <div className="mockup-main-header">
+                  <div className="mockup-title"></div>
+                  <div className="mockup-status-tracker">
+                    <span className="mockup-tracker-dot completed"></span>
+                    <span className="mockup-tracker-dot completed"></span>
+                    <span className="mockup-tracker-dot active"></span>
+                    <span className="mockup-tracker-dot"></span>
+                  </div>
+                </div>
+                <div className="mockup-content-grid">
+                  <div className="mockup-preview-panel">
+                    <div className="mockup-line header"></div>
+                    <div className="mockup-line"></div>
+                    <div className="mockup-line medium"></div>
+                    <div className="mockup-line"></div>
+                    <div className="mockup-line short"></div>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <div className="mockup-preview-panel" style={{ flex: 1, justifyContent: "center" }}>
+                      <div className="mockup-image-box">
+                        <span className="mockup-image-icon">🖼️</span>
+                      </div>
                     </div>
                   </div>
-                  <button
-                    className="past-blog-delete-btn"
-                    onClick={(e) => deleteBlog(b.filename, e)}
-                    disabled={isGenerating}
-                    title="Delete Article"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="3 6 5 6 21 6"></polyline>
-                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                      <line x1="10" y1="11" x2="10" y2="17"></line>
-                      <line x1="14" y1="11" x2="14" y2="17"></line>
-                    </svg>
-                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Interactive LangGraph Workflow Section */}
+      <section id="workflow" className="landing-section alt">
+        <div className="landing-section-title-wrap">
+          <h2 className="landing-section-title">
+            LangGraph <span className="glow">Orchestration Graph</span>
+          </h2>
+          <p className="landing-section-subtitle">
+            Click on the interactive state nodes below to explore the underlying multi-agent coordination workflow and APIs.
+          </p>
+        </div>
+
+        <div className="graph-section-container">
+          {/* SVG Flowchart & Interactive Buttons */}
+          <div className="graph-visual">
+            <div className="graph-nodes-flow">
+              {/* Node 1 */}
+              <div className="graph-node-row">
+                <div
+                  className={`graph-interactive-node ${selectedNode === "router" ? "selected" : ""}`}
+                  onClick={() => setSelectedNode("router")}
+                >
+                  <span className="node-icon-circle">🧭</span>
+                  <div className="node-text-wrap">
+                    <span className="node-label">Router Node</span>
+                    <span className="node-sublabel">Conditional workflow router</span>
+                  </div>
+                </div>
+              </div>
+              <div className="graph-arrow-down">↓</div>
+
+              {/* Node 2 - Split Row */}
+              <div className="node-split-row">
+                <div
+                  className={`graph-interactive-node ${selectedNode === "research" ? "selected" : ""}`}
+                  onClick={() => setSelectedNode("research")}
+                  style={{ width: "240px" }}
+                >
+                  <span className="node-icon-circle">🔍</span>
+                  <div className="node-text-wrap">
+                    <span className="node-label">Research Node</span>
+                    <span className="node-sublabel">Tavily Web Search</span>
+                  </div>
+                </div>
+                <div
+                  className={`graph-interactive-node ${selectedNode === "orchestrator" ? "selected" : ""}`}
+                  onClick={() => setSelectedNode("orchestrator")}
+                  style={{ width: "240px" }}
+                >
+                  <span className="node-icon-circle">📋</span>
+                  <div className="node-text-wrap">
+                    <span className="node-label">Orchestrator Node</span>
+                    <span className="node-sublabel">Structure Plan creator</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Merge arrows down */}
+              <div className="graph-arrow-down glow-line">↓</div>
+
+              {/* Node 3 */}
+              <div className="graph-node-row">
+                <div
+                  className={`graph-interactive-node ${selectedNode === "worker" ? "selected" : ""}`}
+                  onClick={() => setSelectedNode("worker")}
+                >
+                  <span className="node-icon-circle">⚡</span>
+                  <div className="node-text-wrap">
+                    <span className="node-label">Parallel Workers</span>
+                    <span className="node-sublabel">Concurrent content writing</span>
+                  </div>
+                </div>
+              </div>
+              <div className="graph-arrow-down">↓</div>
+
+              {/* Node 4 */}
+              <div className="graph-node-row">
+                <div
+                  className={`graph-interactive-node ${selectedNode === "reducer" ? "selected" : ""}`}
+                  onClick={() => setSelectedNode("reducer")}
+                >
+                  <span className="node-icon-circle">🧩</span>
+                  <div className="node-text-wrap">
+                    <span className="node-label">Reducer Node</span>
+                    <span className="node-sublabel">Content merge & images plan</span>
+                  </div>
+                </div>
+              </div>
+              <div className="graph-arrow-down">↓</div>
+
+              {/* Node 5 */}
+              <div className="graph-node-row">
+                <div
+                  className={`graph-interactive-node ${selectedNode === "imagegen" ? "selected" : ""}`}
+                  onClick={() => setSelectedNode("imagegen")}
+                >
+                  <span className="node-icon-circle">🖼️</span>
+                  <div className="node-text-wrap">
+                    <span className="node-label">Image Gen Pipeline</span>
+                    <span className="node-sublabel">Imagen 4.0 + fallbacks</span>
+                  </div>
+                </div>
+              </div>
+              <div className="graph-arrow-down">↓</div>
+
+              {/* Node 6 */}
+              <div className="graph-node-row">
+                <div
+                  className={`graph-interactive-node ${selectedNode === "sse" ? "selected" : ""}`}
+                  onClick={() => setSelectedNode("sse")}
+                >
+                  <span className="node-icon-circle">📡</span>
+                  <div className="node-text-wrap">
+                    <span className="node-label">SSE Stream Update</span>
+                    <span className="node-sublabel">SSE streaming payload</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Node detail display sidebar panel */}
+          <div className="node-detail-card">
+            <div>
+              <div className="detail-node-header">
+                <div className="detail-node-icon">{activeNodeData.icon}</div>
+                <div>
+                  <h3 className="detail-node-title">{activeNodeData.title}</h3>
+                  <span className="detail-node-tech">{activeNodeData.tech}</span>
+                </div>
+              </div>
+              <p className="detail-node-body">{activeNodeData.details}</p>
+              
+              <ul className="detail-node-bullets">
+                {activeNodeData.bullets.map((bullet, idx) => (
+                  <li key={idx}>{bullet}</li>
+                ))}
+              </ul>
+            </div>
+            
+            <div className="detail-node-footer">
+              💡 {activeNodeData.footnote}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Preloaded Generated Articles Explorer Section */}
+      <section id="demo" className="landing-section">
+        <div className="landing-section-title-wrap">
+          <h2 className="landing-section-title">
+            Generated <span className="glow">Articles Showcase</span>
+          </h2>
+          <p className="landing-section-subtitle">
+            See the structured outlining and factual text outputs built in real-world generation tests by our agent.
+          </p>
+        </div>
+
+        <div className="demo-explorer">
+          {/* Tabs header bar */}
+          <div className="demo-tabs-bar">
+            {ARTICLE_SHOWCASE.map((art, idx) => (
+              <button
+                key={idx}
+                className={`demo-tab-button ${selectedArticleIdx === idx ? "active" : ""}`}
+                onClick={() => setSelectedArticleIdx(idx)}
+              >
+                {art.title.length > 45 ? `${art.title.slice(0, 45)}...` : art.title}
+              </button>
+            ))}
+          </div>
+
+          <div className="demo-split-workspace">
+            {/* Left: outlines */}
+            <div className="demo-left-outline">
+              <div className="section-label" style={{ marginBottom: "6px" }}>
+                Generated Outline ({activeArticle.outline.length} Sections)
+              </div>
+              <div style={{ display: "flex", gap: "12px", marginBottom: "16px", fontSize: "0.8rem", color: "var(--text-muted)" }}>
+                <span>Tone: <strong>{activeArticle.tone}</strong></span>
+                <span>•</span>
+                <span>Type: <strong>{activeArticle.category}</strong></span>
+              </div>
+              
+              {activeArticle.outline.map((section, idx) => (
+                <div key={idx} className="demo-outline-card completed">
+                  <div className="demo-outline-header">
+                    <h4 className="demo-outline-title">0{idx + 1}. {section.title}</h4>
+                    <span className="demo-outline-badge">{section.words} words</span>
+                  </div>
+                  <p className="demo-outline-goal">{section.goal}</p>
+                  
+                  <div style={{ display: "flex", gap: "6px", marginTop: "4px" }}>
+                    {section.tags.map((tag, tIdx) => (
+                      <span
+                        key={tIdx}
+                        className="badge"
+                        style={{
+                          fontSize: "0.6rem",
+                          padding: "2px 6px",
+                          background: tag === "Research" ? "rgba(99, 102, 241, 0.15)" : tag === "Code" ? "rgba(139, 92, 246, 0.15)" : "rgba(16, 185, 129, 0.15)",
+                          color: tag === "Research" ? "#a5b4fc" : tag === "Code" ? "#ddd6fe" : "#a7f3d0"
+                        }}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               ))}
-              {pastBlogs.length === 0 && (
-                <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontStyle: "italic" }}>
-                  No articles generated yet.
-                </div>
-              )}
             </div>
-          </div>
-        </div>
-      </aside>
 
-      {/* Main Panel */}
-      <main className="main-content">
-        {/* Top Header */}
-        <div className="header">
-          <div className="header-left">
-            {sidebarCollapsed && (
-              <button 
-                className="sidebar-toggle-btn"
-                onClick={() => setSidebarCollapsed(false)}
-              >
-                ☰
-              </button>
-            )}
-            <h1 className="main-title">
-              {currentState?.plan?.blog_title || "Blog Writing Workspace"}
-            </h1>
-          </div>
-          
-          {isGenerating && (
-            <div style={{ fontSize: "0.9rem", color: "var(--accent-indigo)", fontWeight: 600 }}>
-              Running agent graph execution...
-            </div>
-          )}
-        </div>
-
-        {/* Status Tracker */}
-        {(isGenerating || currentState) && (
-          <div className="status-container">
-            <div className={`status-step ${currentNode === "router" ? "active" : (currentNode && currentNode !== "router" ? "completed" : "")}`}>
-              <span className="status-dot"></span>
-              Router
-            </div>
-            {currentState?.needs_research && (
-              <div className={`status-step ${currentNode === "research" ? "active" : ((currentState?.evidence_count ?? 0) > 0 ? "completed" : "")}`}>
-                <span className="status-dot"></span>
-                Research
-              </div>
-            )}
-            <div className={`status-step ${currentNode === "orchestrator" ? "active" : (currentState?.plan ? "completed" : "")}`}>
-              <span className="status-dot"></span>
-              Orchestrator
-            </div>
-            <div className={`status-step ${currentNode === "worker" ? "active" : ((currentState?.sections_count ?? 0) > 0 ? "completed" : "")}`}>
-              <span className="status-dot"></span>
-              Workers ({currentState?.sections_count || 0}/{currentState?.plan?.tasks?.length || 0})
-            </div>
-            <div className={`status-step ${currentNode === "reducer" ? "active" : (currentState?.final ? "completed" : "")}`}>
-              <span className="status-dot"></span>
-              Reducer
-            </div>
-          </div>
-        )}
-
-        {/* Tabs Bar */}
-        <div className="tabs-header">
-          <button
-            className={`tab-btn ${activeTab === "plan" ? "active" : ""}`}
-            onClick={() => setActiveTab("plan")}
-          >
-            🧩 Plan
-          </button>
-          <button
-            className={`tab-btn ${activeTab === "evidence" ? "active" : ""}`}
-            onClick={() => setActiveTab("evidence")}
-          >
-            🔎 Evidence ({currentState?.evidence_count || 0})
-          </button>
-          <button
-            className={`tab-btn ${activeTab === "preview" ? "active" : ""}`}
-            onClick={() => setActiveTab("preview")}
-          >
-            📝 Markdown Preview
-          </button>
-          <button
-            className={`tab-btn ${activeTab === "images" ? "active" : ""}`}
-            onClick={() => setActiveTab("images")}
-          >
-            🖼️ Images
-          </button>
-          <button
-            className={`tab-btn ${activeTab === "logs" ? "active" : ""}`}
-            onClick={() => setActiveTab("logs")}
-          >
-            🧾 Logs
-          </button>
-        </div>
-
-        {/* Tab Contents */}
-        <div className="tab-content">
-          {/* Plan Tab */}
-          {activeTab === "plan" && (
-            <div>
-              {currentState?.plan ? (
-                <div>
-                  <div className="plan-summary">
-                    <div className="summary-card">
-                      <span className="summary-label">Target Audience</span>
-                      <span className="summary-value">{currentState.plan.audience}</span>
-                    </div>
-                    <div className="summary-card">
-                      <span className="summary-label">Tone Style</span>
-                      <span className="summary-value">{currentState.plan.tone}</span>
-                    </div>
-                    <div className="summary-card">
-                      <span className="summary-label">Post Category</span>
-                      <span className="summary-value" style={{ textTransform: "capitalize" }}>
-                        {currentState.plan.blog_kind}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="task-grid">
-                    {currentState.plan.tasks.map((task) => {
-                      const isDone = currentState.completed_section_ids?.includes(task.id);
-                      const isWriting = currentNode === "worker" && !isDone;
-                      
-                      let cardBorder = "1px solid var(--border-glow)";
-                      let cardBg = "var(--bg-glass)";
-                      let statusBadge = null;
-                      
-                      if (isDone) {
-                        cardBorder = "1px solid rgba(16, 185, 129, 0.4)";
-                        cardBg = "rgba(16, 185, 129, 0.03)";
-                        statusBadge = <span className="badge" style={{ background: "rgba(16, 185, 129, 0.15)", color: "#a7f3d0" }}>✓ Completed</span>;
-                      } else if (isWriting) {
-                        cardBorder = "1px solid rgba(139, 92, 246, 0.5)";
-                        cardBg = "rgba(139, 92, 246, 0.05)";
-                        statusBadge = <span className="badge" style={{ background: "rgba(139, 92, 246, 0.15)", color: "#ddd6fe", animation: "pulse-slow 2s infinite ease-in-out" }}>⚡ Writing...</span>;
-                      }
-                      
-                      return (
-                        <div
-                          key={task.id}
-                          className="task-card"
-                          style={{
-                            border: cardBorder,
-                            background: cardBg,
-                            transition: "all 0.3s ease"
-                          }}
-                        >
-                          <div className="task-id">0{task.id}</div>
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "8px" }}>
-                            <h3 className="task-title">{task.title}</h3>
-                            {statusBadge}
-                          </div>
-                          <p className="task-goal">{task.goal}</p>
-                          
-                          <ul className="task-bullets">
-                            {task.bullets.map((b, idx) => (
-                              <li key={idx}>{b}</li>
-                            ))}
-                          </ul>
-
-                          <div className="task-badge-row">
-                            <span className="badge badge-words">{task.target_words} words</span>
-                            {task.requires_research && <span className="badge badge-research">Research</span>}
-                            {task.requires_code && <span className="badge badge-code">Code</span>}
-                            {task.requires_citations && <span className="badge badge-citation">Citations</span>}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ) : (
-                <div className="info-empty">
-                  <div className="info-empty-icon">🧩</div>
-                  <h3 className="info-empty-title">No Plan Available</h3>
-                  <p className="info-empty-desc">
-                    Plans are generated by the agent during active blog generation. Run a new generation to see the task outline.
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Evidence Tab */}
-          {activeTab === "evidence" && (
-            <div>
-              {currentState?.evidence && currentState.evidence.length > 0 ? (
-                <div className="evidence-list">
-                  {currentState.evidence.map((item, idx) => (
-                    <div key={idx} className="evidence-card">
-                      <div className="evidence-header">
-                        <h3 className="evidence-title">{item.title}</h3>
-                        {item.url && (
-                          <a 
-                            href={item.url} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            className="evidence-link-btn"
-                          >
-                            Visit Source ↗
-                          </a>
-                        )}
-                      </div>
-                      
-                      {item.snippet && (
-                        <p className="evidence-snippet">{item.snippet}</p>
-                      )}
-
-                      <div className="evidence-meta">
-                        {item.source && <span>Source: <strong>{item.source}</strong></span>}
-                        {item.published_at && <span>Published: <strong>{item.published_at}</strong></span>}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="info-empty">
-                  <div className="info-empty-icon">🔎</div>
-                  <h3 className="info-empty-title">No Evidence Sources</h3>
-                  <p className="info-empty-desc">
-                    Web research findings and citation sources will populate here if the router flags research queries for the topic.
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Markdown Preview Tab */}
-          {activeTab === "preview" && (
-            <div>
-              {currentState?.final ? (
-                <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                  {isGenerating && currentState?.plan && (
-                    <div style={{
-                      background: "var(--bg-glass)",
-                      border: "1px solid var(--border-glow)",
-                      borderRadius: "12px",
-                      padding: "16px 20px",
-                      marginBottom: "10px",
-                      animation: "fadeIn 0.3s ease"
-                    }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                        <span style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--accent-indigo)" }}>Writing Sections Progress</span>
-                        <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
-                          {currentState.completed_section_ids?.length || 0} of {currentState.plan.tasks.length} sections complete
-                        </span>
-                      </div>
-                      {/* progress bar */}
-                      <div style={{ background: "rgba(255,255,255,0.05)", height: "6px", borderRadius: "3px", overflow: "hidden", marginBottom: "16px" }}>
-                        <div style={{
-                          background: "var(--grad-primary)",
-                          width: `${((currentState.completed_section_ids?.length || 0) / currentState.plan.tasks.length) * 100}%`,
-                          height: "100%",
-                          transition: "width 0.4s ease"
-                        }} />
-                      </div>
-                      {/* mini task tags */}
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                        {currentState.plan.tasks.map((t) => {
-                          const isDone = currentState.completed_section_ids?.includes(t.id);
-                          const isWriting = currentNode === "worker" && !isDone;
-                          return (
-                            <div
-                              key={t.id}
-                              style={{
-                                fontSize: "0.75rem",
-                                padding: "4px 10px",
-                                borderRadius: "20px",
-                                background: isDone ? "rgba(16, 185, 129, 0.15)" : (isWriting ? "rgba(139, 92, 246, 0.15)" : "rgba(255,255,255,0.03)"),
-                                border: `1px solid ${isDone ? "rgba(16, 185, 129, 0.3)" : (isWriting ? "rgba(139, 92, 246, 0.3)" : "rgba(255,255,255,0.05)")}`,
-                                color: isDone ? "#a7f3d0" : (isWriting ? "#ddd6fe" : "var(--text-secondary)"),
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "6px",
-                                transition: "all 0.3s ease"
-                              }}
-                            >
-                              <span>{isDone ? "✓" : (isWriting ? "⚡" : "○")}</span>
-                              <span>{t.title}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="preview-actions">
-                    {selectedFilename && (
-                      <>
-                        <a
-                          href={`${API_BASE_URL}/api/blogs/${selectedFilename}/download`}
-                          className="btn-secondary"
-                          download
-                        >
-                          ⬇️ Download Markdown
-                        </a>
-                        <a
-                          href={`${API_BASE_URL}/api/blogs/${selectedFilename}/bundle`}
-                          className="btn-secondary"
-                        >
-                          📦 Download Bundle (MD + Images)
-                        </a>
-                      </>
-                    )}
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(currentState.final);
-                        setCopyBlogSuccess(true);
-                        setTimeout(() => setCopyBlogSuccess(false), 2000);
-                      }}
-                      className="btn-secondary"
-                      style={{ cursor: "pointer" }}
-                    >
-                      {copyBlogSuccess ? "✓ Copied!" : "📋 Copy Markdown"}
-                    </button>
-                  </div>
-                  {renderMarkdown(currentState.final)}
-                </div>
-              ) : (
-                <div className="info-empty">
-                  <div className="info-empty-icon">📝</div>
-                  <h3 className="info-empty-title">No Article Content</h3>
-                  <p className="info-empty-desc">
-                    Enter a topic in the sidebar config panel and start generation, or select an article from the past list.
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Images Tab */}
-          {activeTab === "images" && (
-            <div>
-              {currentState?.image_specs || selectedFilename ? (
-                <div>
-                  <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
-                    <a
-                      href={`${API_BASE_URL}/api/blogs/all/images-zip`}
-                      className="btn-secondary"
-                    >
-                      ⬇️ Download Images (ZIP)
-                    </a>
-                  </div>
-
-                  {currentState?.image_specs && (
-                    <div className="image-specs-section">
-                      <div className="section-label" style={{ marginBottom: "8px" }}>Image Generation Plan</div>
-                      <pre style={{ fontSize: "0.8rem", overflowX: "auto" }}>
-                        <code>{JSON.stringify(currentState.image_specs, null, 2)}</code>
-                      </pre>
-                    </div>
-                  )}
-
-                  {/* Render the images gallery if we have specs, or just general gallery */}
-                  <div className="image-gallery">
-                    {currentState?.image_specs?.map((spec, idx) => (
-                      <div key={idx} className="image-card">
-                        <div className="image-wrapper">
-                          <img
-                            className="img-element"
-                            src={`${API_BASE_URL}/images/${spec.filename}`}
-                            alt={spec.alt}
-                            onError={(e) => {
-                              // If image fails to load, display placeholder
-                              (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=60";
-                            }}
-                          />
-                        </div>
-                        <div className="image-card-content">
-                          <div className="image-card-title">{spec.filename}</div>
-                          <p className="image-card-caption">{spec.caption}</p>
-                          <div className="image-card-prompt">Prompt: {spec.prompt}</div>
-                        </div>
-                      </div>
-                    ))}
-                    {(!currentState?.image_specs || currentState.image_specs.length === 0) && (
-                      <div style={{ gridColumn: "1/-1", textAlign: "center", color: "var(--text-muted)", fontStyle: "italic", padding: "40px" }}>
-                        No specific generated image logs. Check if files exist in the backend images directory.
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <div className="info-empty">
-                  <div className="info-empty-icon">🖼️</div>
-                  <h3 className="info-empty-title">No Generated Visuals</h3>
-                  <p className="info-empty-desc">
-                    AI diagrams or workflow visual plans will show up here after the reducer node runs drawing assets.
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Logs Tab */}
-          {activeTab === "logs" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              <div className="logs-console">
-                {logs.map((logItem, idx) => (
-                  <div key={idx} className={`log-entry ${logItem.type}`}>
-                    <span className="log-time">[{logItem.time}]</span>
-                    <span>{logItem.msg}</span>
-                  </div>
-                ))}
-                {logs.length === 0 && (
-                  <div style={{ color: "var(--text-muted)", fontStyle: "italic" }}>
-                    Console idle. Ready for next event stream.
-                  </div>
-                )}
-                <div ref={logsEndRef} />
+            {/* Right: Markdown content display */}
+            <div className="demo-right-preview">
+              <div className="section-label" style={{ marginBottom: "16px" }}>Raw Markdown Output Preview</div>
+              <div dangerouslySetInnerHTML={{
+                __html: activeArticle.markdown
+                  .replace(/# (.*)/g, "<h1 style='font-size: 1.8rem; font-weight: 700; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;'>$1</h1>")
+                  .replace(/## (.*)/g, "<h2 style='font-size: 1.2rem; font-weight: 600; margin-top: 24px; margin-bottom: 12px; color: #fff;'>$1</h2>")
+                  .replace(/\*\*([^*]+)\*\*/g, "<strong style='color:#fff;'>$1</strong>")
+                  .replace(/- \*\*([^*]+)\*\*/g, "<li><strong style='color:#fff;'>$1</strong>")
+                  .replace(/\[Source\]\((.*?)\)/g, "<a href='$1' target='_blank' style='color:var(--accent-emerald); text-decoration:underline;'>[Source]</a>")
+              }} />
+              <div style={{ marginTop: "32px", padding: "16px", background: "rgba(255,255,255,0.02)", border: "1px dashed rgba(255,255,255,0.1)", borderRadius: "8px", fontSize: "0.85rem", color: "var(--text-muted)", textAlign: "center" }}>
+                📄 Excerpt shown. Launch the agent dashboard to generate the full article.
               </div>
             </div>
-          )}
+          </div>
         </div>
-      </main>
-    </>
+      </section>
+
+      {/* Feature Capabilities Grid */}
+      <section id="features" className="landing-section alt">
+        <div className="landing-section-title-wrap">
+          <h2 className="landing-section-title">
+            Designed for <span className="glow">Visual Excellence</span>
+          </h2>
+          <p className="landing-section-subtitle">
+            Underpinned by advanced API services, strict constraints, and state validation.
+          </p>
+        </div>
+
+        <div className="capabilities-grid">
+          <div className="capability-card">
+            <span className="capability-icon">📡</span>
+            <h3 className="capability-title">Real-Time Streaming</h3>
+            <p className="capability-desc">
+              Watch sections build live. Our Server-Sent Events (SSE) server handles granular state updates instantly.
+            </p>
+          </div>
+          <div className="capability-card">
+            <span className="capability-icon">🖼️</span>
+            <h3 className="capability-title">Resilient Image Pipeline</h3>
+            <p className="capability-desc">
+              Generates visual assets with Google Imagen 4.0. Automatically falls back to Pollinations AI under rate limits.
+            </p>
+          </div>
+          <div className="capability-card">
+            <span className="capability-icon">🔍</span>
+            <h3 className="capability-title">Tavily Web Research</h3>
+            <p className="capability-desc">
+              Normalizes publication dates, dedupes URLs, and references domain sources automatically.
+            </p>
+          </div>
+          <div className="capability-card">
+            <span className="capability-icon">📄</span>
+            <h3 className="capability-title">Complete Markdown Bundle</h3>
+            <p className="capability-desc">
+              Download clean markdown files, local image asset packs, or complete compressed ZIP bundles in one click.
+            </p>
+          </div>
+        </div>
+      </section>
+
+
+
+      {/* Action Banner */}
+      <section className="landing-section alt" style={{ paddingBottom: "120px" }}>
+        <div className="cta-banner">
+          <h2 className="cta-banner-title">Ready to automate your publishing loop?</h2>
+          <p className="cta-banner-desc">
+            Experience the future of multi-agent collaborative writing. Outline, draft, illustrate, and refine in seconds.
+          </p>
+          <Link href="/dashboard" className="btn-hero-primary" style={{ marginTop: "16px" }}>
+            Start Writing for Free ⚡
+          </Link>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="landing-footer">
+        <div className="footer-left">
+          <div className="footer-logo">BlogWriter AI</div>
+          <span className="footer-copyright">
+            © {new Date().getFullYear()} BlogWriter AI. Developed by Rushda Baqui.
+          </span>
+        </div>
+        <div className="footer-right">
+          <a href="https://github.com/RushdaBaqui-08" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://www.linkedin.com/in/rushda-baqui-945581276/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="mailto:rushdabaqui@gmail.com">Contact</a>
+        </div>
+      </footer>
+    </div>
   );
 }
